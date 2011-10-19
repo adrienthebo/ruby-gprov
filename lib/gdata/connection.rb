@@ -1,39 +1,31 @@
-# Implements the google clientLogin authentication method
-require 'net/http'
-require 'openssl'
+# Provides a single point of access for making http requests.
+require 'rubygems'
+require 'httparty'
+require 'nokogiri'
 
 module GData
   class Connection
+    include HTTParty
+    base_uri "https://apps-apis.google.com/a/feeds/"
 
-    def initialize(email, password, service, options = {})
-      @email    = email
-      @password = password
-      @service  = service
-
-      host = (options[:host] or "apps-api.google.com")
-      port = (options[:port] or 443)
-      @connection = Net::HTTP.new(host, port)
-      @connection.use_ssl = true
-      @connection.verify_mode = OpenSSL::SSL::VERIFY_PEER
+    attr_reader :domain, :token
+    def initialize(domain, token)
+      @domain = domain
+      @auth = {:headers => {
+        'Authorization' => "GoogleLogin auth=#{token}",
+        'Content-Type' => 'application/atom+xml',
+      }}
     end
 
-    # Authorization is handled by the google clientLogin service
-    # perhaps split this out?
-    def auth
-      request = Net::HTTP::Post.new(URI.parse('https://www.google.com/accounts/ClientLogin'))
-
-      request.set_form_data({
-        "accountType" => "HOSTED",
-        "Email"       => @email,
-        "Passwd"      => @password,
-        "service"     => @service,
-      })
-
-      # This may not need to be explicit
-      request['Content-Type'] = "application/x-www-form-urlencoded"
-
-      response = @connection.request(request)
+    [:put, :get, :post, :delete].each do |verb|
+      define_method verb do |path, *args|
+        options = *args
+        options ||= {}
+        options.merge! @auth
+        path.gsub!(":domain", @domain)
+        output = self.class.send(verb, path, options)
+        Nokogiri::XML(output)
+      end
     end
-
   end
 end

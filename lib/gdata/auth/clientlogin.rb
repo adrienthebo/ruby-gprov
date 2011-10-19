@@ -12,7 +12,7 @@ module GData
         @uri = URI.parse('https://www.google.com/accounts/ClientLogin')
       end
 
-      def auth
+      def token
         connection = Net::HTTP.new(@uri.host, @uri.port)
         connection.use_ssl = true
         connection.verify_mode = OpenSSL::SSL::VERIFY_PEER
@@ -26,7 +26,6 @@ module GData
         })
 
         response = connection.request(request)
-
         if response.code == "200" and response.body =~ /Auth=(.*)\n/
           $1
         end
