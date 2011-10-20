@@ -29,6 +29,13 @@ module GData
           hash = xml_to_hash(entry)
           new(hash)
         end
+
+      end
+
+      def self.get(provision, title)
+        document = provision.connection.get("/:domain/user/2.0/#{title}")
+
+        puts document.to_xml :indent => 2
       end
 
       def initialize(options = {})
@@ -38,6 +45,20 @@ module GData
           else
             $stderr.puts "Received invalid attribute #{k}"
           end
+        end
+      end
+
+      # Generate a nokogiri XML representation of this user
+      def to_xml
+        Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+          xml.entry['atom']( 'xmlns:atom' => 'http://www.w3.org/2005/Atom',
+                             'xmlns:apps' => 'http://schemas.google.com/apps/2006' ) {
+            xml.category('scheme' => 'http://schemas.google.com/g/2005#kind',
+                         'term'   => 'http://schemas.google.com/apps/2006#user')
+            xml.login['apps']('userName' => @username, 'suspended' => @suspended) # password, hashfunction
+            xml.quota['apps']('limit' => @limit)
+            xml.name['apps']('familyName' => @family_name, 'givenName' => @given_name)
+          }
         end
       end
     end
