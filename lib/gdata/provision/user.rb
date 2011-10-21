@@ -5,16 +5,20 @@ module GData
     class User
       include GData::Provision::ObjectBase
 
-      xml_attr_accessor :title,          :xpath => "title/text()"
-      xml_attr_accessor :username,       :xpath => "login/@userName"
-      xml_attr_accessor :suspended,      :xpath => "login/@suspended"
-      xml_attr_accessor :ip_whitelisted, :xpath => "login/@ipWhitelisted"
-      xml_attr_accessor :admin,          :xpath => "login/@admin"
-      xml_attr_accessor :change_password_at_next_login, :xpath => "login/@changePasswordAtNextLogin"
-      xml_attr_accessor :agreed_to_terms, :xpath => "login/@agreedToTerms"
-      xml_attr_accessor :limit,          :xpath => "quota/@limit"
-      xml_attr_accessor :family_name,    :xpath => "name/@familyName"
-      xml_attr_accessor :given_name,     :xpath => "name/@givenName"
+      xml_attr_accessor :title,                         :xpath => "entry/title/text()"
+      xml_attr_accessor :user_name,                     :xpath => "entry/login/@userName"
+      xml_attr_accessor :suspended,                     :xpath => "entry/login/@suspended"
+      xml_attr_accessor :ip_whitelisted,                :xpath => "entry/login/@ipWhitelisted"
+      xml_attr_accessor :admin,                         :xpath => "entry/login/@admin"
+      xml_attr_accessor :change_password_at_next_login, :xpath => "entry/login/@changePasswordAtNextLogin"
+      xml_attr_accessor :agreed_to_terms,               :xpath => "entry/login/@agreedToTerms"
+      xml_attr_accessor :limit,                         :xpath => "entry/quota/@limit"
+      xml_attr_accessor :family_name,                   :xpath => "entry/name/@familyName"
+      xml_attr_accessor :given_name,                    :xpath => "entry/name/@givenName"
+
+      # These attributes appear to never be sent from google but can be
+      # posted back
+      attr_accessor :password, :hash_function_name
 
       # Retrieves all users within a domain
       def self.all(provision)
@@ -23,7 +27,7 @@ module GData
         # Namespaces make querying much messier and there's only a single
         # namespace in this document, so we strip it.
         document.remove_namespaces!
-        entries = document.xpath("/feed/entry")
+        entries = document.xpath("/feed")
 
         entries.map do |entry|
           hash = xml_to_hash(entry)
@@ -34,32 +38,62 @@ module GData
 
       def self.get(provision, title)
         document = provision.connection.get("/:domain/user/2.0/#{title}")
+        document.remove_namespaces!
 
-        puts document.to_xml :indent => 2
+        hash = xml_to_hash(document)
+
+        new(hash)
       end
 
       def initialize(options = {})
-        options.each_pair do |k, v|
-          if respond_to? "#{k}=".intern
-            send("#{k}=".intern, v)
-          else
-            $stderr.puts "Received invalid attribute #{k}"
-          end
-        end
+        attributes_from_hash options
       end
 
-      # Generate a nokogiri XML representation of this user
-      def to_xml
-        Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
-          xml.entry['atom']( 'xmlns:atom' => 'http://www.w3.org/2005/Atom',
-                             'xmlns:apps' => 'http://schemas.google.com/apps/2006' ) {
-            xml.category('scheme' => 'http://schemas.google.com/g/2005#kind',
-                         'term'   => 'http://schemas.google.com/apps/2006#user')
-            xml.login['apps']('userName' => @username, 'suspended' => @suspended) # password, hashfunction
-            xml.quota['apps']('limit' => @limit)
-            xml.name['apps']('familyName' => @family_name, 'givenName' => @given_name)
+      # Generate a nokogiri representation of this user
+      def to_nokogiri
+        base_document = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+          xml.entry('xmlns:atom' => 'http://www.w3.org/2005/Atom',
+                    'xmlns:apps' => 'http://schemas.google.com/apps/2006' ) {
+
+            # Namespaces cannot be used until they are declared, so we need to
+            # retroactively declare the namespace of the parent
+            xml.parent.namespace = xml.parent.namespace_definitions.first
+            xml.category("scheme" => "http://schemas.google.com/g/2005#kind",
+                         "term"   =>"http://schemas.google.com/apps/2006#user")
+            xml['apps'].login(login_attributes)
+            xml['apps'].quota("limit" => @limit)
+            xml['apps'].name("familyName" => @family_name, "givenName" => @given_name)
           }
         end
+
+        base_document
+      end
+
+      def create
+      end
+
+      def update
+      end
+
+      def delete
+
+      private
+
+      # Map object properties to xml tag attributes
+      def login_attributes
+        attrs = {
+          "userName"                  => @user_name,
+          "suspended"                 => @suspended,
+          "ipWhitelisted"             => @ip_whitelisted,
+          "admin"                     => @admin,
+          "changePasswordAtNextLogin" => @change_password_at_next_login,
+          "agreedToTerms"             => @agreed_to_terms,
+        }
+
+        attrs['password']         = @password unless @password.nil?
+        attrs['hashFunctionName'] = @hash_function_name unless @hash_function_name.nil?
+
+        attrs
       end
     end
   end
