@@ -12,18 +12,18 @@ module GData
       xml_attr_accessor :description, :xpath => %Q{property[@name = "description"]/@value}
 
       # Retrieves all users within a domain
-      def self.all(provision)
-        document = provision.connection.get("/group/2.0/:domain")
+      def self.all(connection)
+        feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain", "/feed/entry")
+        entries = feed.fetch
+        entries.map {|xml| new_from_xml(xml) }
+      end
 
-        # Namespaces make querying much messier and there's only a single
-        # namespace in this document, so we strip it.
+      def self.get(connection, group_id)
+        document = connection.get("/group/2.0/:domain/#{group_id}")
         document.remove_namespaces!
-        entries = document.xpath("/feed/entry")
+        entry = document.root
 
-        entries.map do |entry|
-          hash = xml_to_hash(entry)
-          new(hash)
-        end
+        new_from_xml(entry)
       end
 
       def initialize(options = {})

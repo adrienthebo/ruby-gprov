@@ -6,6 +6,14 @@ module GData
     class User
       include GData::Provision::EntryBase
 
+      # Generic Entry class fields.
+      # IGNORE ME
+      # list
+      # create
+      # get
+      # update
+      # delete
+
       xml_attr_accessor :title,                         :xpath => "title/text()"
       xml_attr_accessor :user_name,                     :xpath => "login/@userName"
       xml_attr_accessor :suspended,                     :xpath => "login/@suspended"
@@ -22,27 +30,26 @@ module GData
       attr_accessor :password, :hash_function_name
 
       # Retrieves all users within a domain
-      def self.all(provision)
-        feed = GData::Provision::Feed.new(provision, "/:domain/user/2.0", "/feed/entry")
+      def self.all(connection)
+        feed = GData::Provision::Feed.new(connection, "/:domain/user/2.0", "/feed/entry")
         entries = feed.fetch
         entries.map {|xml| new_from_xml(xml) }
       end
 
-      def self.get(provision, title)
-        document = provision.connection.get("/:domain/user/2.0/#{title}")
+      def self.get(connection, title)
+        document = connection.get("/:domain/user/2.0/#{title}")
         document.remove_namespaces!
         entry = document.root
 
-        new_from_xml(entry)
-      end
-
-      def self.new_from_xml(document)
-        hash = xml_to_hash(document)
-        new(hash)
+        obj = new_from_xml(entry)
+        obj.status = :clean
+        obj.connection = connection
+        obj
       end
 
       def initialize(options = {})
         attributes_from_hash options
+        @status = :new
       end
 
       # Generate a nokogiri representation of this user
@@ -65,13 +72,14 @@ module GData
         base_document
       end
 
-      def create
+      def create!
+        
       end
 
-      def update
+      def update!
       end
 
-      def delete
+      def delete!
       end
 
       private

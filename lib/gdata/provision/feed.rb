@@ -7,8 +7,8 @@ module GData
     class Feed
 
       attr_reader :results
-      def initialize(provision, path, xpath)
-        @provision  = provision
+      def initialize(connection, path, xpath)
+        @connection  = connection
         @path       = path
         @xpath      = xpath
 
@@ -23,7 +23,7 @@ module GData
       private
 
       def retrieve_page
-        document = @provision.connection.get(@path)
+        document = @connection.get(@path)
 
         # Stripping out namespaces isn't the best solution, but it's the
         # easiest solution until I can add namespacing to all the xpath defs
