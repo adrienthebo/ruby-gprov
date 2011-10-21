@@ -17,8 +17,8 @@ module GData
 
     def default_headers
       {:headers => {
-        'Authorization' => "GoogleLogin auth=#{token}",
-        'Content-Type' => 'application/atom+xml',
+        'Authorization' => "GoogleLogin auth=#{@token}",
+        'Content-Type'  => 'application/atom+xml',
       }}
     end
 
@@ -29,7 +29,7 @@ module GData
 
         options = *args
         options ||= {}
-        options.merge! @default_headers
+        options.merge! default_headers
 
         path.gsub!(":domain", @domain)
 
