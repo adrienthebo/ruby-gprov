@@ -3,7 +3,7 @@
 require 'gdata'
 
 module GData
-  class Provision
+  module Provision
     class Feed
 
       attr_reader :results

@@ -2,7 +2,7 @@ require 'gdata'
 require 'gdata/provision/feed'
 require 'gdata/provision/entrybase'
 module GData
-  class Provision
+  module Provision
     class User
       include GData::Provision::EntryBase
 

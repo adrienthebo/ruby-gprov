@@ -1,5 +1,5 @@
 module GData
-  class Provision
+  module Provision
     module EntryBase
       module ClassMethods
 

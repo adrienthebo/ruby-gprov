@@ -1,7 +1,7 @@
 require 'gdata'
 require 'gdata/provision/entrybase'
 module GData
-  class Provision
+  module Provision
     class Group
       include GData::Provision::EntryBase
 
