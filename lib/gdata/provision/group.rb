@@ -1,9 +1,9 @@
 require 'gdata'
-require 'gdata/provision/objectbase'
+require 'gdata/provision/entrybase'
 module GData
   class Provision
     class Group
-      include GData::Provision::ObjectBase
+      include GData::Provision::EntryBase
 
       xml_attr_accessor :group_id, :xpath => %Q{property[@name = "groupId"]/@value}
       xml_attr_accessor :group_name, :xpath => %Q{property[@name = "groupName"]/@value}

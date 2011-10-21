@@ -1,9 +1,9 @@
 require 'gdata'
-require 'gdata/provision/objectbase'
+require 'gdata/provision/entrybase'
 module GData
   class Provision
     class User
-      include GData::Provision::ObjectBase
+      include GData::Provision::EntryBase
 
       xml_attr_accessor :title,                         :xpath => "entry/title/text()"
       xml_attr_accessor :user_name,                     :xpath => "entry/login/@userName"
