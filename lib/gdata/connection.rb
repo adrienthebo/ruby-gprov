@@ -8,11 +8,15 @@ module GData
     include HTTParty
     base_uri "https://apps-apis.google.com/a/feeds/"
 
-    attr_reader :domain, :token
+    attr_reader :domain
     def initialize(domain, token, options = {})
       @domain = domain
+      @token  = token
       @options = options
-      @auth = {:headers => {
+    end
+
+    def default_headers
+      {:headers => {
         'Authorization' => "GoogleLogin auth=#{token}",
         'Content-Type' => 'application/atom+xml',
       }}
@@ -25,7 +29,7 @@ module GData
 
         options = *args
         options ||= {}
-        options.merge! @auth
+        options.merge! @default_headers
 
         path.gsub!(":domain", @domain)
 
