@@ -35,7 +35,12 @@ module GData
       def self.all(connection)
         feed = GData::Provision::Feed.new(connection, "/:domain/user/2.0", "/feed/entry")
         entries = feed.fetch
-        entries.map {|xml| new_from_xml(xml) }
+        entries.map do |xml|
+          obj = new_from_xml(xml)
+          obj.status = :clean
+          obj.connection = connection
+          obj
+        end
       end
 
       def self.get(connection, title)
