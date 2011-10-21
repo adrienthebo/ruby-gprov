@@ -14,7 +14,9 @@ module GData
       # update
       # delete
 
+      # The :title attribute is only used after the account has been created
       xml_attr_accessor :title,                         :xpath => "title/text()"
+
       xml_attr_accessor :user_name,                     :xpath => "login/@userName"
       xml_attr_accessor :suspended,                     :xpath => "login/@suspended"
       xml_attr_accessor :ip_whitelisted,                :xpath => "login/@ipWhitelisted"
@@ -73,30 +75,54 @@ module GData
       end
 
       def create!
+        # TODO Validation?
+        response = connection.post("/:domain/user/2.0", {:body => to_nokogiri.to_xml})
+
+        puts response
+
+        # if success
+        status = :clean
+        # else PANIC
         
       end
 
       def update!
+        response = connection.put("/:domain/user/2.0/#{title}", {:body => to_nokogiri.to_xml})
+        pp response
+        # if success
+        status = :clean
+        # else PANIC
       end
 
       def delete!
+        response = connection.delete("/:domain/user/2.0/#{title}")
+        pp response
+        # if success
+        status = :deleted
+        # else PANIC
       end
 
       private
 
       # Map object properties to xml tag attributes
       def login_attributes
-        attrs = {
-          "userName"                  => @user_name,
-          "suspended"                 => @suspended,
-          "ipWhitelisted"             => @ip_whitelisted,
-          "admin"                     => @admin,
-          "changePasswordAtNextLogin" => @change_password_at_next_login,
-          "agreedToTerms"             => @agreed_to_terms,
-        }
+        attrs = {}
 
-        attrs['password']         = @password unless @password.nil?
-        attrs['hashFunctionName'] = @hash_function_name unless @hash_function_name.nil?
+        attr_pairs = [
+          {"userName"                  => @user_name},
+          {"suspended"                 => @suspended},
+          {"ipWhitelisted"             => @ip_whitelisted},
+          {"admin"                     => @admin},
+          {"changePasswordAtNextLogin" => @change_password_at_next_login},
+          {"agreedToTerms"             => @agreed_to_terms},
+          {'password'                  => @password},
+          {'hashFunctionName'          => @hash_function_name},
+        ]
+
+        attr_pairs.each do |pair|
+          key = pair.keys.first
+          attrs.merge!(pair) unless pair[key].nil?
+        end
 
         attrs
       end
