@@ -1,20 +1,21 @@
 require 'gdata'
+require 'gdata/provision/feed'
 require 'gdata/provision/entrybase'
 module GData
   class Provision
     class User
       include GData::Provision::EntryBase
 
-      xml_attr_accessor :title,                         :xpath => "entry/title/text()"
-      xml_attr_accessor :user_name,                     :xpath => "entry/login/@userName"
-      xml_attr_accessor :suspended,                     :xpath => "entry/login/@suspended"
-      xml_attr_accessor :ip_whitelisted,                :xpath => "entry/login/@ipWhitelisted"
-      xml_attr_accessor :admin,                         :xpath => "entry/login/@admin"
-      xml_attr_accessor :change_password_at_next_login, :xpath => "entry/login/@changePasswordAtNextLogin"
-      xml_attr_accessor :agreed_to_terms,               :xpath => "entry/login/@agreedToTerms"
-      xml_attr_accessor :limit,                         :xpath => "entry/quota/@limit"
-      xml_attr_accessor :family_name,                   :xpath => "entry/name/@familyName"
-      xml_attr_accessor :given_name,                    :xpath => "entry/name/@givenName"
+      xml_attr_accessor :title,                         :xpath => "title/text()"
+      xml_attr_accessor :user_name,                     :xpath => "login/@userName"
+      xml_attr_accessor :suspended,                     :xpath => "login/@suspended"
+      xml_attr_accessor :ip_whitelisted,                :xpath => "login/@ipWhitelisted"
+      xml_attr_accessor :admin,                         :xpath => "login/@admin"
+      xml_attr_accessor :change_password_at_next_login, :xpath => "login/@changePasswordAtNextLogin"
+      xml_attr_accessor :agreed_to_terms,               :xpath => "login/@agreedToTerms"
+      xml_attr_accessor :limit,                         :xpath => "quota/@limit"
+      xml_attr_accessor :family_name,                   :xpath => "name/@familyName"
+      xml_attr_accessor :given_name,                    :xpath => "name/@givenName"
 
       # These attributes appear to never be sent from google but can be
       # posted back
@@ -22,26 +23,21 @@ module GData
 
       # Retrieves all users within a domain
       def self.all(provision)
-        document = provision.connection.get("/:domain/user/2.0")
-
-        # Namespaces make querying much messier and there's only a single
-        # namespace in this document, so we strip it.
-        document.remove_namespaces!
-        entries = document.xpath("/feed")
-
-        entries.map do |entry|
-          hash = xml_to_hash(entry)
-          new(hash)
-        end
-
+        feed = GData::Provision::Feed.new(provision, "/:domain/user/2.0", "/feed/entry")
+        entries = feed.fetch
+        entries.map {|xml| new_from_xml(xml) }
       end
 
       def self.get(provision, title)
         document = provision.connection.get("/:domain/user/2.0/#{title}")
         document.remove_namespaces!
+        entry = document.root
 
+        new_from_xml(entry)
+      end
+
+      def self.new_from_xml(document)
         hash = xml_to_hash(document)
-
         new(hash)
       end
 
@@ -76,6 +72,7 @@ module GData
       end
 
       def delete
+      end
 
       private
 
