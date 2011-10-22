@@ -44,14 +44,18 @@ module GData
       end
 
       def self.get(connection, title)
-        document = connection.get("/:domain/user/2.0/#{title}")
-        document.remove_namespaces!
-        entry = document.root
+        response = connection.get("/:domain/user/2.0/#{title}")
 
-        obj = new_from_xml(entry)
-        obj.status = :clean
-        obj.connection = connection
-        obj
+        if response.code == 200
+          document = Nokogiri::XML(response.body)
+          document.remove_namespaces!
+          entry = document.root
+
+          obj = new_from_xml(entry)
+          obj.status = :clean
+          obj.connection = connection
+          obj
+        end
       end
 
       def initialize(options = {})
