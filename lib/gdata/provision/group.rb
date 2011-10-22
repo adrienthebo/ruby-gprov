@@ -15,7 +15,12 @@ module GData
       def self.all(connection)
         feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain", "/feed/entry")
         entries = feed.fetch
-        entries.map {|xml| new_from_xml(xml) }
+        entries.map do |xml|
+          obj = new_from_xml(xml)
+          obj.status = :clean
+          obj.connection = connection
+          obj
+        end
       end
 
       def self.get(connection, group_id)
@@ -23,11 +28,60 @@ module GData
         document.remove_namespaces!
         entry = document.root
 
-        new_from_xml(entry)
+        obj = new_from_xml(entry)
+        obj.status = :clean
+        obj.connection = connection
+        obj
       end
 
       def initialize(options = {})
         attributes_from_hash options
+      end
+
+      def to_nokogiri
+        base_document = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+          xml.entry('xmlns:atom' => 'http://www.w3.org/2005/Atom',
+                    'xmlns:apps' => 'http://schemas.google.com/apps/2006',
+                    'xmlns:gd'   => "http://schemas.google.com/g/2005" ) {
+
+            # Namespaces cannot be used until they are declared, so we need to
+            # retroactively declare the namespace of the parent
+            xml.parent.namespace = xml.parent.namespaces["atom"]
+            xml.category("scheme" => "http://schemas.google.com/g/2005#kind",
+                         "term"   =>"http://schemas.google.com/apps/2006#user")
+
+            xml['apps'].property("name" => "groupId",         "value" => @group_id)
+            xml['apps'].property("name" => "groupName",       "value" => @group_name)
+            xml['apps'].property("name" => "emailPermission", "value" => @email_permission)
+            xml['apps'].property("name" => "description",     "value" => @description)
+          }
+        end
+
+        base_document
+      end
+
+      def create!
+        response = connection.post("/group/2.0/:domain", {:body => to_nokogiri.to_xml})
+        puts response.code
+        # if success
+        status = :clean
+        # else PANIC
+      end
+
+      def update!
+        response = connection.put("/group/2.0/:domain", {:body => to_nokogiri.to_xml})
+        puts response
+        # if success
+        status = :clean
+        # else PANIC
+      end
+
+      def delete!
+        response = connection.put("/group/2.0/:domain/#{group_id}")
+        puts response
+        # if success
+        status = :clean
+        # else PANIC
       end
     end
   end
