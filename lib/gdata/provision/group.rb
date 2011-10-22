@@ -46,7 +46,7 @@ module GData
 
             # Namespaces cannot be used until they are declared, so we need to
             # retroactively declare the namespace of the parent
-            xml.parent.namespace = xml.parent.namespaces["atom"]
+            xml.parent.namespace = xml.parent.namespace_definitions.select {|ns| ns.prefix == "atom"}.first
             xml.category("scheme" => "http://schemas.google.com/g/2005#kind",
                          "term"   =>"http://schemas.google.com/apps/2006#user")
 
