@@ -28,6 +28,7 @@ token_hash = { :token => token, :created => Time.now }
 
 File.open(token_file, "w") do |f|
   f.write(YAML.dump(token_hash))
+  f.chmod(0600)
 end
 
 puts "Token information written to #{token_file}"
