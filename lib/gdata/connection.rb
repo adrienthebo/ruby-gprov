@@ -1,4 +1,7 @@
 # Provides a single point of access for making http requests.
+#
+# This adds the correct authorization header and content-type for make
+# requests against the google API work correctly
 require 'rubygems'
 require 'httparty'
 require 'nokogiri'
@@ -31,17 +34,17 @@ module GData
         options ||= {}
         options.merge! default_headers
 
+        # Interpolate the :domain substring into a url to allow for the domain
+        # to be in an arbitary position of a request
         path.gsub!(":domain", @domain)
 
         if options[:noop]
           $stderr.puts "Would have attempted the following call"
           $stderr.puts "#{verb} #{path} #{options.inspect}"
-          Nokogiri::XML("")
         else
+          # Return the request to the calling class so that the caller can
+          # determine the outcome of the request.
           output = self.class.send(verb, path, options)
-          if output.code == 200
-            Nokogiri::XML(output.body)
-          end
         end
       end
     end
