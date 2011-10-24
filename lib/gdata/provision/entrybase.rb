@@ -3,14 +3,30 @@ module GData
     module EntryBase
       module ClassMethods
 
-        # Defines attribute accessors as well as the xpath definition for
-        # extracting the field from an xml document, and an optional
-        # transform parameter to munge the value post extration
-        # TODO mark resource as dirty if an attribute is updated
-        def xml_attr_accessor(name, attribute_hash)
-          attr_accessor name
-          @attributes ||= {}
-          @attributes[name] = attribute_hash
+        # The following define attribute readers and writers with an xpath
+        # definition for extracting a field from an xml document, and an
+        # optional transform parameter to munge the value post extraction
+
+        def xml_attr_reader(name, hash)
+          attr_reader name
+          save_attribute name, hash
+        end
+
+        def xml_attr_writer(name, hash)
+
+          # Manually define our own attr_writer so we can track if any fields
+          # have been edited
+          define_method("#{name}=") do |val|
+            instance_variable_set "@#{name}",   val
+            instance_variable_set "@#{status}", :dirty
+          end
+
+          save_attribute name, hash
+        end
+
+        def xml_attr_accessor(name, hash)
+          attr_reader name
+          xml_attr_writer name, hash
         end
 
         # Takes all xml_attr_accessors defined and an xml document and
@@ -35,6 +51,13 @@ module GData
         def new_from_xml(document)
           hash = xml_to_hash(document)
           new(hash)
+        end
+
+        private :save_attribute
+
+        def save_attribute(name, attribute_hash)
+          @attributes ||= {}
+          @attributes[name] = attribute_hash
         end
       end
 
