@@ -20,6 +20,7 @@ module GData
           "service"     => @service,
         }
         response = self.class.post('', {:body => form_data})
+
         if response.code == 200 and response.body =~ /Auth=(.*)\n/
           $1
         end
