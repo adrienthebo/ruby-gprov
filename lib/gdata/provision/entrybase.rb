@@ -29,7 +29,7 @@ module GData
         end
 
         def attributes
-          @attribute.dup
+          @attributes.dup unless @attributes.nil?
         end
 
         def new_from_xml(document)
