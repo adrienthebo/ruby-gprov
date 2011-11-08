@@ -53,7 +53,7 @@ module GData
           new(hash)
         end
 
-        private :save_attribute
+        private
 
         def save_attribute(name, attribute_hash)
           @attributes ||= {}

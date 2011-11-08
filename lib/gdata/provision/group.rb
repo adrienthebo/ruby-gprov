@@ -67,8 +67,9 @@ module GData
       def create!
         response = connection.post("/group/2.0/:domain", {:body => to_nokogiri.to_xml})
         pp response
-        # if success
-        status = :clean
+        if response.success?
+          status = :clean
+        end
         # else PANIC
       end
 
@@ -76,18 +77,32 @@ module GData
         response = connection.put("/group/2.0/:domain", {:body => to_nokogiri.to_xml})
         puts response
         # if success
-        status = :clean
+        if response.success?
+          status = :clean
+        end
         # else PANIC
       end
 
       def delete!
         response = connection.put("/group/2.0/:domain/#{group_id}")
         puts response
-        # if success
-        status = :clean
+        if response.success?
+          status = :clean
+        end
         # else PANIC
+      end
+
+      def add_member(member)
+      end
+
+      def list_members
+        response = connection.get("/group/2.0/:domain/#{@group_id}/member")
+
+        if response.success?
+          document = Nokogiri::XML(response.body)
+          puts document.to_xml :indent => 2
+        end
       end
     end
   end
 end
-
