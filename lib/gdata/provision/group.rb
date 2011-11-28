@@ -1,5 +1,6 @@
 require 'gdata'
 require 'gdata/provision/entrybase'
+require 'gdata/provision/member'
 module GData
   module Provision
     class Group
@@ -93,15 +94,14 @@ module GData
       end
 
       def add_member(member)
+        member = GData::Provision::Member.new(:member_id => member)
+        member.connection = @connection
+        member.group_id = @group_id
+        member.create!
       end
 
       def list_members
-        response = connection.get("/group/2.0/:domain/#{@group_id}/member")
-
-        if response.success?
-          document = Nokogiri::XML(response.body)
-          puts document.to_xml :indent => 2
-        end
+        GData::Provision::Member.all(@connection, @group_id)
       end
     end
   end

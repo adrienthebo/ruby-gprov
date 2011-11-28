@@ -7,10 +7,26 @@ module GData
     class Member
       include GData::Provision::EntryBase
 
-      xml_attr_accessor :member_id, :xpath => ""
-      xml_attr_reader   :member_type, :xpath => ""
-      xml_attr_reader   :direct_member, :xpath => ""
+      xml_attr_accessor :member_id, :xpath => %Q{property[@name = "memberId"]/@value}
+      xml_attr_accessor :member_type, :xpath => %Q{property[@name = "memberType"]/@value}
+      xml_attr_accessor :direct_member, :xpath => %Q{property[@name = "directMember"]/@value}
+      attr_accessor :group_id
+
+      def self.all(connection, group_id)
+        feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/member", "/feed/entry")
+        entries = feed.fetch
+        entries.map do |xml|
+          obj = new_from_xml(xml)
+          obj.status = :clean
+          obj.connection = connection
+          obj.group_id = group_id
+          obj
+        end
+      end
       
+      def initialize(options = {})
+        attributes_from_hash options
+      end
 
       def to_nokogiri
         base_document = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
@@ -27,6 +43,15 @@ module GData
         end
 
         base_document
+      end
+
+      def create!
+        response = connection.post("/group/2.0/:domain/#{@group_id}/member", {:body => to_nokogiri.to_xml})
+        pp response
+        if response.success?
+          status = :clean
+        end
+        # else PANIC
       end
     end
   end
