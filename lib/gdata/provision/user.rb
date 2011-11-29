@@ -3,8 +3,7 @@ require 'gdata/provision/feed'
 require 'gdata/provision/entrybase'
 module GData
   module Provision
-    class User
-      include GData::Provision::EntryBase
+    class User < GData::Provision::EntryBase
 
       # Generic Entry class fields.
       # IGNORE ME

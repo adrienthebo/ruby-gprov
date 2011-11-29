@@ -4,8 +4,7 @@ require 'gdata/provision/entrybase'
 
 module GData
   module Provision
-    class Member
-      include GData::Provision::EntryBase
+    class Member < GData::Provision::EntryBase
 
       xml_attr_accessor :member_id, :xpath => %Q{property[@name = "memberId"]/@value}
       xml_attr_accessor :member_type, :xpath => %Q{property[@name = "memberType"]/@value}

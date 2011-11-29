@@ -3,8 +3,7 @@ require 'gdata/provision/entrybase'
 require 'gdata/provision/member'
 module GData
   module Provision
-    class Group
-      include GData::Provision::EntryBase
+    class Group < GData::Provision::EntryBase
 
       xml_attr_accessor :group_id, :xpath => %Q{property[@name = "groupId"]/@value}
       xml_attr_accessor :group_name, :xpath => %Q{property[@name = "groupName"]/@value}
