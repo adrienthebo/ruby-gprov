@@ -23,10 +23,6 @@ module GData
         end
       end
       
-      def initialize(options = {})
-        attributes_from_hash options
-      end
-
       def to_nokogiri
         base_document = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
           xml.entry('xmlns:atom' => 'http://www.w3.org/2005/Atom',

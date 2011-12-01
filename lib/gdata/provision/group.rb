@@ -16,7 +16,7 @@ module GData
         feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain", "/feed/entry")
         entries = feed.fetch
         entries.map do |xml|
-          obj = new_from_xml(xml)
+          obj = new(xml)
           obj.status = :clean
           obj.connection = connection
           obj
@@ -31,15 +31,11 @@ module GData
           document.remove_namespaces!
           entry = document.root
 
-          obj = new_from_xml(entry)
+          obj = new(entry)
           obj.status = :clean
           obj.connection = connection
           obj
         end
-      end
-
-      def initialize(options = {})
-        attributes_from_hash options
       end
 
       def to_nokogiri

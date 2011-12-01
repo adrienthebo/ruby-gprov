@@ -35,7 +35,7 @@ module GData
         feed = GData::Provision::Feed.new(connection, "/:domain/user/2.0", "/feed/entry")
         entries = feed.fetch
         entries.map do |xml|
-          obj = new_from_xml(xml)
+          obj = new(xml)
           obj.status = :clean
           obj.connection = connection
           obj
@@ -50,16 +50,11 @@ module GData
           document.remove_namespaces!
           entry = document.root
 
-          obj = new_from_xml(entry)
+          obj = new(entry)
           obj.status = :clean
           obj.connection = connection
           obj
         end
-      end
-
-      def initialize(options = {})
-        attributes_from_hash options
-        @status = :new
       end
 
       # Generate a nokogiri representation of this user
@@ -91,7 +86,7 @@ module GData
         # if success
         status = :clean
         # else PANIC
-        
+
       end
 
       def update!

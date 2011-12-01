@@ -19,12 +19,13 @@ module GData
       attr_accessor :connection
 
       def initialize(source)
+        @status = :new
         case source
         when Hash
           attributes_from_hash source
         when Nokogiri::XML::Node
           hash = self.class.xml_to_hash(source) # XXX really?
-          attributes_from_hash source
+          attributes_from_hash hash
         else
           raise
         end

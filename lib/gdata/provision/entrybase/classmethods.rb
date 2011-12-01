@@ -49,11 +49,6 @@ module GData
           @attributes.dup unless @attributes.nil?
         end
 
-        def new_from_xml(document)
-          hash = xml_to_hash(document)
-          new(hash)
-        end
-
         private
 
         def save_attribute(name, attribute_hash)
