@@ -1,5 +1,6 @@
 # Representation of group members
 require 'gdata'
+require 'pp'
 require 'gdata/provision/entrybase'
 
 module GData
@@ -42,6 +43,15 @@ module GData
 
       def create!
         response = connection.post("/group/2.0/:domain/#{@group_id}/member", {:body => to_nokogiri.to_xml})
+        pp response
+        if response.success?
+          status = :clean
+        end
+        # else PANIC
+      end
+
+      def delete!
+        response = connection.delete("/group/2.0/:domain/#{@group_id}/member", {:body => to_nokogiri.to_xml})
         pp response
         if response.success?
           status = :clean
