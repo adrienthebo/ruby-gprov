@@ -16,6 +16,10 @@ module GData
       @domain = domain
       @token  = token
       @options = options
+
+      if @options[:debug]
+        self.class.debug_output $stderr
+      end
     end
 
     def default_headers
@@ -38,7 +42,7 @@ module GData
         # to be in an arbitary position of a request
         path.gsub!(":domain", @domain)
 
-        if options[:noop]
+        if options[:noop] or @options[:noop]
           $stderr.puts "Would have attempted the following call"
           $stderr.puts "#{verb} #{path} #{options.inspect}"
         else
