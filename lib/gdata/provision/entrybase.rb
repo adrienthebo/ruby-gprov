@@ -5,11 +5,6 @@ module GData
     class EntryBase
 
       extend GData::Provision::EntryBase::ClassMethods
-      include GData::Provision::EntryBase::ClassMethods
-
-      #########################################################################
-      # The actual base class follows
-      #########################################################################
 
       # Status with respect to google. Feel free to change this if you want
       # to break your code.
