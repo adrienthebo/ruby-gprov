@@ -16,7 +16,7 @@ module GData
         feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/member", "/feed/entry")
         entries = feed.fetch
         entries.map do |xml|
-          obj = new_from_xml(xml)
+          obj = new(xml)
           obj.status = :clean
           obj.connection = connection
           obj.group_id = group_id
