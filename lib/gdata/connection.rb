@@ -58,7 +58,11 @@ module GData
           when 503
             raise GData::Error::QuotaExceeded
           else
-            output
+            if output.success?
+              output
+            else
+              raise
+            end
           end
         end
       end
