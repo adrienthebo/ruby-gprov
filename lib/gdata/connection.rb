@@ -52,16 +52,16 @@ module GData
           output = self.class.send(verb, path, options)
           case output.code
           when 401
-            raise GData::Error::TokenInvalid
+            raise GData::Error::TokenInvalid.new(output)
           when 403
-            raise GData::Error::InputInvalid
+            raise GData::Error::InputInvalid.new(output)
           when 503
-            raise GData::Error::QuotaExceeded
+            raise GData::Error::QuotaExceeded.new(output)
           else
-            if output.success?
-              output
+            if ! output.success?
+              raise GData::Error.new(output)
             else
-              raise
+              output
             end
           end
         end
