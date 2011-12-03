@@ -95,6 +95,13 @@ module GData
         member.create!
       end
 
+      def del_member(member)
+        member = GData::Provision::Member.new(:member_id => member)
+        member.connection = @connection
+        member.group_id = @group_id
+        member.delete!
+      end
+
       def list_members
         GData::Provision::Member.all(@connection, @group_id)
       end
