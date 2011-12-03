@@ -31,6 +31,8 @@ describe GData::Connection do
         before do
           xml = %Q{<?xml version="1.0" encoding="UTF-8"?>\n<test xml="pointy"/>}
           @stub_request = mock
+          @stub_request.stubs(:code).returns 200
+          @stub_request.stubs(:success?).returns true
           @stub_request.stubs(:class).returns HTTParty::Response
         end
 
@@ -50,7 +52,7 @@ describe GData::Connection do
         end
 
         it "should interpolate the :domain substring" do
-          @klass.expects(verb).with("/domain", @expected_options)
+          @klass.expects(verb).with("/domain", @expected_options).returns @stub_request
           @instance.send(verb, "/:domain")
         end
       end
