@@ -67,7 +67,7 @@ module GData
             xml.category("scheme" => "http://schemas.google.com/g/2005#kind",
                          "term"   =>"http://schemas.google.com/apps/2006#user")
             xml['apps'].login(login_attributes)
-            xml['apps'].quota("limit" => @limit)
+            xml['apps'].quota("limit" => @limit) if @limit
             xml['apps'].name("familyName" => @family_name, "givenName" => @given_name)
           }
         end
