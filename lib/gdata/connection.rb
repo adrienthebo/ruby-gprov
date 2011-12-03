@@ -5,6 +5,7 @@
 require 'rubygems'
 require 'httparty'
 require 'nokogiri'
+require 'gdata/error'
 
 module GData
   class Connection
@@ -49,6 +50,10 @@ module GData
           # Return the request to the calling class so that the caller can
           # determine the outcome of the request.
           output = self.class.send(verb, path, options)
+          if output.code == 401
+            raise GData::Error::TokenInvalid
+          end
+          output
         end
       end
     end
