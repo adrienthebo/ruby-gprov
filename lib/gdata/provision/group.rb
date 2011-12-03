@@ -26,16 +26,14 @@ module GData
       def self.get(connection, group_id)
         response = connection.get("/group/2.0/:domain/#{group_id}")
 
-        if response.code == 200
-          document = Nokogiri::XML(response.body)
-          document.remove_namespaces!
-          entry = document.root
+        document = Nokogiri::XML(response.body)
+        document.remove_namespaces!
+        entry = document.root
 
-          obj = new(entry)
-          obj.status = :clean
-          obj.connection = connection
-          obj
-        end
+        obj = new(entry)
+        obj.status = :clean
+        obj.connection = connection
+        obj
       end
 
       def to_nokogiri
@@ -62,30 +60,17 @@ module GData
 
       def create!
         response = connection.post("/group/2.0/:domain", {:body => to_nokogiri.to_xml})
-        pp response
-        if response.success?
-          status = :clean
-        end
-        # else PANIC
+        status = :clean
       end
 
       def update!
         response = connection.put("/group/2.0/:domain", {:body => to_nokogiri.to_xml})
-        puts response
-        # if success
-        if response.success?
-          status = :clean
-        end
-        # else PANIC
+        status = :clean
       end
 
       def delete!
         response = connection.put("/group/2.0/:domain/#{group_id}")
-        puts response
-        if response.success?
-          status = :clean
-        end
-        # else PANIC
+        status = :clean
       end
 
       def add_member(member)

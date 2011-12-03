@@ -45,16 +45,14 @@ module GData
       def self.get(connection, title)
         response = connection.get("/:domain/user/2.0/#{title}")
 
-        if response.code == 200
-          document = Nokogiri::XML(response.body)
-          document.remove_namespaces!
-          entry = document.root
+        document = Nokogiri::XML(response.body)
+        document.remove_namespaces!
+        entry = document.root
 
-          obj = new(entry)
-          obj.status = :clean
-          obj.connection = connection
-          obj
-        end
+        obj = new(entry)
+        obj.status = :clean
+        obj.connection = connection
+        obj
       end
 
       # Generate a nokogiri representation of this user
@@ -78,31 +76,18 @@ module GData
       end
 
       def create!
-        # TODO Validation?
         response = connection.post("/:domain/user/2.0", {:body => to_nokogiri.to_xml})
-
-        puts response
-
-        # if success
         status = :clean
-        # else PANIC
-
       end
 
       def update!
         response = connection.put("/:domain/user/2.0/#{title}", {:body => to_nokogiri.to_xml})
-        pp response
-        # if success
         status = :clean
-        # else PANIC
       end
 
       def delete!
         response = connection.delete("/:domain/user/2.0/#{title}")
-        pp response
-        # if success
         status = :deleted
-        # else PANIC
       end
 
       private

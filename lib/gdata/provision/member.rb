@@ -43,18 +43,12 @@ module GData
 
       def create!
         response = connection.post("/group/2.0/:domain/#{@group_id}/member", {:body => to_nokogiri.to_xml})
-        if response.success?
-          status = :clean
-        end
-        # else PANIC
+        status = :clean
       end
 
       def delete!
         response = connection.delete("/group/2.0/:domain/#{@group_id}/member/#{@member_id}")
-        if response.success?
-          status = :clean
-        end
-        # else PANIC
+        status = :clean
       end
     end
   end
