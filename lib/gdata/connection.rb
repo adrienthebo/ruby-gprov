@@ -50,10 +50,16 @@ module GData
           # Return the request to the calling class so that the caller can
           # determine the outcome of the request.
           output = self.class.send(verb, path, options)
-          if output.code == 401
+          case output.code
+          when 401
             raise GData::Error::TokenInvalid
+          when 403
+            raise GData::Error::InputInvalid
+          when 503
+            raise GData::Error::QuotaExceeded
+          else
+            output
           end
-          output
         end
       end
     end
