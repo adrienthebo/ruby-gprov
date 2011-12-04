@@ -28,11 +28,6 @@ module GData
         end
       end
 
-      # map this to the class method, for convenience
-      def attributes
-        self.class.attributes
-      end
-
       # Maps hash key/value pairs to object attributes
       def attributes_from_hash(hash)
         hash.each_pair do |k, v|
