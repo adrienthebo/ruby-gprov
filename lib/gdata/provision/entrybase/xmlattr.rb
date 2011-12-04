@@ -34,6 +34,7 @@ module GData
         attr_reader :name
         def initialize(name, options={})
           @name = name
+          @type = :string
           methodhash(options)
         end
 
@@ -65,7 +66,7 @@ module GData
           when :numeric
             @value = @value.to_i
           when :string
-            # o_O
+            # no op
           when :bool
             if @value == "true"
               @value = true

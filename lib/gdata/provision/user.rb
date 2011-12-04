@@ -16,15 +16,15 @@ module GData
       # The :title attribute is only used after the account has been created
       xmlattr :title, :type => :string, :xpath => "title/text()"
 
-      xmlattr :user_name,       :type => :string, :xpath => "login/@userName"
-      xmlattr :suspended,       :type => :string, :xpath => "login/@suspended"
-      xmlattr :ip_whitelisted,  :type => :string, :xpath => "login/@ipWhitelisted"
-      xmlattr :admin,           :type => :string, :xpath => "login/@admin"
-      xmlattr :agreed_to_terms, :type => :string, :xpath => "login/@agreedToTerms"
-      xmlattr :limit,           :type => :string, :xpath => "quota/@limit"
-      xmlattr :family_name,     :type => :string, :xpath => "name/@familyName"
-      xmlattr :given_name,      :type => :string, :xpath => "name/@givenName"
-      xmlattr :change_password_at_next_login, :type => :string, :xpath => "login/@changePasswordAtNextLogin"
+      xmlattr :user_name,       :xpath => "login/@userName"
+      xmlattr :suspended,       :xpath => "login/@suspended"
+      xmlattr :ip_whitelisted,  :xpath => "login/@ipWhitelisted"
+      xmlattr :admin,           :xpath => "login/@admin"
+      xmlattr :agreed_to_terms, :xpath => "login/@agreedToTerms"
+      xmlattr :limit,           :xpath => "quota/@limit"
+      xmlattr :family_name,     :xpath => "name/@familyName"
+      xmlattr :given_name,      :xpath => "name/@givenName"
+      xmlattr :change_password_at_next_login, :xpath => "login/@changePasswordAtNextLogin"
 
       # These attributes appear to never be sent from google but can be
       # posted back
