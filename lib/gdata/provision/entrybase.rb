@@ -37,7 +37,7 @@ module GData
         when Hash
           attributes_from_hash source
         when Nokogiri::XML::Node
-          hash = self.class.xml_to_hash(source) # XXX really?
+          hash = self.class.xml_to_hash(source)
           attributes_from_hash hash
         when NilClass
           # New object!

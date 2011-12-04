@@ -29,7 +29,10 @@ module GData
         end
 
         # Takes all xml_attr_accessors defined and an xml document and
-        # extracts the values from the xml into a hash
+        # extracts the values from the xml into a hash.
+        #
+        # This is a class method because xmlattr objects are not directly
+        # exposed, so parsing needs to happen in the class.
         def xml_to_hash(xml)
           h = {}
           if @attrs
