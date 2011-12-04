@@ -1,14 +1,25 @@
+# = gdata/provision/entrybase/classmethods.rb
+#
+# == Overview
+#
+# Generates the DSL style behavior for entrybase and adds some convenience
+# methods
+#
+# == Authors
+#
+# Adrien Thebo
+#
+# == Copyright
+#
+# 2011 Puppet Labs
+#
 require 'nokogiri'
 require 'gdata/provision/entrybase/xmlattr'
 module GData
   module Provision
     class EntryBase
       module ClassMethods
-
-        # The following define attribute readers and writers with an xpath
-        # definition for extracting a field from an xml document, and an
-        # optional transform parameter to munge the value post extraction
-
+        # Generates xmlattrs and encapsulates parsing logic
         def xmlattr(name, options={} &block)
           attr = GData::Provision::EntryBase::XMLAttr.new(name, options)
           attr.instance_eval &block if block_given?
