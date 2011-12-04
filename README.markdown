@@ -1,9 +1,7 @@
-GData-ruby
+Ruby-GData
 ==========
 
-Rationale
----------
+Description
+-----------
 
-All the ruby bindings for the google API are either glorified http wrappers, or
-make me want to tear out my eyes. This is the invocation of the third attribute
-of a good programmer - I can do it better.
+Ruby implementation of the [Google Provisioning API](http://code.google.com/googleapps/domain/gdata_provisioning_api_v2.0_reference.html).
