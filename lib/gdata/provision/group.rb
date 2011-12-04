@@ -5,11 +5,11 @@ module GData
   module Provision
     class Group < GData::Provision::EntryBase
 
-      xml_attr_accessor :group_id, :xpath => %Q{property[@name = "groupId"]/@value}
-      xml_attr_accessor :group_name, :xpath => %Q{property[@name = "groupName"]/@value}
-      xml_attr_accessor :email_permission, :xpath => %Q{property[@name = "emailPermission"]/@value}
-      xml_attr_accessor :permission_preset, :xpath => %Q{property[@name = "permissionPreset"]/@value}
-      xml_attr_accessor :description, :xpath => %Q{property[@name = "description"]/@value}
+      xmlattr :group_id,          :type => :string, :xpath => %Q{property[@name = "groupId"]/@value}
+      xmlattr :group_name,        :type => :string, :xpath => %Q{property[@name = "groupName"]/@value}
+      xmlattr :email_permission,  :type => :string, :xpath => %Q{property[@name = "emailPermission"]/@value}
+      xmlattr :permission_preset, :type => :string, :xpath => %Q{property[@name = "permissionPreset"]/@value}
+      xmlattr :description,       :type => :string, :xpath => %Q{property[@name = "description"]/@value}
 
       # Retrieves all users within a domain
       def self.all(connection)

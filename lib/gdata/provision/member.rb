@@ -7,9 +7,9 @@ module GData
   module Provision
     class Member < GData::Provision::EntryBase
 
-      xml_attr_accessor :member_id, :xpath => %Q{property[@name = "memberId"]/@value}
-      xml_attr_accessor :member_type, :xpath => %Q{property[@name = "memberType"]/@value}
-      xml_attr_accessor :direct_member, :xpath => %Q{property[@name = "directMember"]/@value}
+      xmlattr :member_id,     :type => :string, :xpath => %Q{property[@name = "memberId"]/@value}
+      xmlattr :member_type,   :type => :string, :xpath => %Q{property[@name = "memberType"]/@value}
+      xmlattr :direct_member, :type => :string, :xpath => %Q{property[@name = "directMember"]/@value}
       attr_accessor :group_id
 
       def self.all(connection, group_id)
