@@ -31,7 +31,11 @@ module GData
         end
 
         def attributes
-          @attrs
+          @attrs.map {|a| a.name}.sort_by {|s| s.to_s}
+        end
+
+        def attribute_names
+          attributes.map {|f| f.to_s.capitalize.sub(/$/, ":").gsub(/_/, " ") }
         end
       end
     end
