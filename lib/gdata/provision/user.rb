@@ -18,6 +18,21 @@ module GData
       xmlattr :given_name,      :xpath => "name/@givenName"
       xmlattr :change_password_at_next_login, :xpath => "login/@changePasswordAtNextLogin"
 
+      # Adds explicit ordering to attributes for cleaner output
+      def self.attributes
+        [
+          :user_name,
+          :given_name,
+          :family_name,
+          :admin,
+          :agreed_to_terms,
+          :change_password_at_next_login,
+          :suspended,
+          :ip_whitelisted,
+          :limit
+        ]
+      end
+
       # These attributes appear to never be sent from google but can be
       # posted back
       attr_accessor :password, :hash_function_name
