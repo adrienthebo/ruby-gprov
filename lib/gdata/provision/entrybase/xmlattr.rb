@@ -1,3 +1,31 @@
+# = gdata/provision/entrybase/xmlattr.rb: attribute accessors with xml annotations
+#
+# == Overview
+#
+# Defines a data type and provides the logic for extracting and formatting
+# object information from xml data
+#
+# Attribute accessors are not directly defined, because this class was designed
+# to be used DSL style
+#
+# == Examples
+#
+#     xmlattr :demo, :type => :numeric, :xpath => "example/xpath/text()"
+#
+#     xmlattr :demo do
+#       type :numeric
+#       xpath "example/xpath/text()"
+#     end
+#
+# == Authors
+#
+# Adrien Thebo
+#
+# == Copyright
+#
+# 2011 Puppet Labs
+#
+require 'nokogiri'
 
 module GData
   module Provision
