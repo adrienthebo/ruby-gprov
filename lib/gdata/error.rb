@@ -1,3 +1,17 @@
+# = gdata/error.rb
+#
+# == Overview
+#
+# Common definition of possible gdata errors.
+#
+# == Authors
+#
+# Adrien Thebo
+#
+# == Copyright
+#
+# 2011 Puppet Labs
+#
 require 'gdata'
 module GData
   class Error < Exception

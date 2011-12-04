@@ -1,10 +1,23 @@
-# Provides a single point of access for making http requests.
+# = gdata/connection.rb: common interface for the google apps API
+#
+# == Overview
+#
+# Provides a single point of access for making http requests against the google
+# apps API.
 #
 # This adds the correct authorization header and content-type for make
-# requests against the google API work correctly
-require 'rubygems'
+# requests against the google API work correctly, so that calling classes
+# don't need to handle authentication, formatting, or basic error handling.
+#
+# == Authors
+#
+# Adrien Thebo
+#
+# == Copyright
+#
+# 2011 Puppet Labs
+#
 require 'httparty'
-require 'nokogiri'
 require 'gdata/error'
 
 module GData

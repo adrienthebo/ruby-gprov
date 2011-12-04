@@ -1,3 +1,17 @@
+# = gdata/provision/entrybase.rb: base class for provisioning api objects
+#
+# == Overview
+#
+# Provides the top level constructs for mapping XML feeds to objects and back
+#
+# == Authors
+#
+# Adrien Thebo
+#
+# == Copyright
+#
+# 2011 Puppet Labs
+#
 require 'nokogiri'
 require 'gdata/provision/entrybase/classmethods'
 module GData
@@ -6,13 +20,17 @@ module GData
 
       extend GData::Provision::EntryBase::ClassMethods
 
-      # Status with respect to google. Feel free to change this if you want
-      # to break your code.
+      # Status with respect to google.
       # TODO protected?
       # values: :new, :clean, :dirty, :deleted
       attr_accessor :status
       attr_accessor :connection
 
+      # Instantiates a new entry object.
+      #
+      # Possible data sources:
+      #  * Hash of attribute names and values
+      #  * A nokogiri node containing the root of the object
       def initialize(source=nil)
         @status = :new
         case source
@@ -38,7 +56,6 @@ module GData
           end
         end
       end
-
     end
   end
 end
