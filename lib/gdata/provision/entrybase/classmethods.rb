@@ -47,7 +47,7 @@ module GData
         # Provides an ordered list of xml attributes. Mainly used to give
         # a list of attributes in a specific order.
         def attributes
-          @attrs.map {|a| a.name}.sort_by {|s| s.to_s}
+          @attrs.map {|a| a.name}
         end
 
 
