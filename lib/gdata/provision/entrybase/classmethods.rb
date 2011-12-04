@@ -30,10 +30,15 @@ module GData
           h
         end
 
+        # Provides an ordered list of xml attributes. Mainly used to give
+        # a list of attributes in a specific order.
         def attributes
           @attrs.map {|a| a.name}.sort_by {|s| s.to_s}
         end
 
+
+        # Transforms standard ruby attribute names to something slightly more
+        # human readable.
         def attribute_names
           attributes.map {|f| f.to_s.capitalize.sub(/$/, ":").gsub(/_/, " ") }
         end

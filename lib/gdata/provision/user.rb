@@ -5,14 +5,6 @@ module GData
   module Provision
     class User < GData::Provision::EntryBase
 
-      # Generic Entry class fields.
-      # IGNORE ME
-      # list
-      # create
-      # get
-      # update
-      # delete
-
       # The :title attribute is only used after the account has been created
       xmlattr :title, :type => :string, :xpath => "title/text()"
 
