@@ -59,7 +59,7 @@ module GData
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end
 
-      def self.get(connection, title)
+      def self.get(connection, title, options={})
         response = connection.get("/:domain/user/2.0/#{title}")
 
         document = Nokogiri::XML(response.body)

@@ -76,20 +76,28 @@ module GData
 
       def delete!
         response = connection.put("/group/2.0/:domain/#{group_id}")
-        status = :clean
+        status = :deleted
       end
 
-      def add_member(member)
-        member = GData::Provision::Member.new(:member_id => member)
-        member.connection = @connection
-        member.group_id = @group_id
+      def add_member(membername)
+        member = GData::Provision::Member.new(
+          :connection => @connection,
+          :source => {
+            :group_id => @group_id,
+            :member_id => membername,
+          }
+        )
         member.create!
       end
 
-      def del_member(member)
-        member = GData::Provision::Member.new(:member_id => member)
-        member.connection = @connection
-        member.group_id = @group_id
+      def del_member(membername)
+        member = GData::Provision::Member.new(
+          :connection => @connection,
+          :source => {
+            :group_id => @group_id,
+            :member_id => membername,
+          }
+        )
         member.delete!
       end
 
