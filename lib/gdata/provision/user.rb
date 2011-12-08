@@ -34,7 +34,7 @@ module GData
       xmlattr :change_password_at_next_login, :xpath => "login/@changePasswordAtNextLogin"
 
       # Adds explicit ordering to attributes for cleaner output
-      def self.attributes
+      def self.attribute_names
         [
           :user_name,
           :given_name,
