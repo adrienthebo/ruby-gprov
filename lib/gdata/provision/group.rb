@@ -26,8 +26,19 @@ module GData
       xmlattr :description,       :xpath => %Q{property[@name = "description"]/@value}
 
       # Retrieves all users within a domain
-      def self.all(connection)
-        feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain", "/feed/entry")
+      def self.all(connection, options={})
+
+        # TODO Fail if unrecognized options passed
+        url = "/group/2.0/:domain"
+        if member = options[:member]
+          url << "/?member=#{member}"
+
+          if direct_only = options[:direct_only]
+            url << "&directOnly=#{direct_only}"
+          end
+        end
+
+        feed = GData::Provision::Feed.new(connection, url, "/feed/entry")
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end
