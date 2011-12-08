@@ -15,13 +15,7 @@ module GData
       def self.all(connection, group_id)
         feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/member", "/feed/entry")
         entries = feed.fetch
-        entries.map do |xml|
-          obj = new(xml)
-          obj.status = :clean
-          obj.connection = connection
-          obj.group_id = group_id
-          obj
-        end
+        entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end
       
       def to_nokogiri

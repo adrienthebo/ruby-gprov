@@ -28,33 +28,23 @@ module GData
           attr_accessor name
         end
 
-        # Takes all xml_attr_accessors defined and an xml document and
-        # extracts the values from the xml into a hash.
-        #
         # This is a class method because xmlattr objects are not directly
         # exposed, so parsing needs to happen in the class.
-        def xml_to_hash(xml)
-          h = {}
-          if @attrs
-            @attrs.inject(h) do |hash, attr|
-              hash[attr.name] = attr.parse(xml)
-              hash
-            end
-          end
-          h
-        end
 
         # Provides an ordered list of xml attributes. Mainly used to give
         # a list of attributes in a specific order.
         def attributes
-          @attrs.map {|a| a.name}
+          @attrs
         end
 
+        def attribute_names
+          @attrs.map {|a| a.name }
+        end
 
         # Transforms standard ruby attribute names to something slightly more
         # human readable.
-        def attribute_names
-          attributes.map {|f| f.to_s.capitalize.sub(/$/, ":").gsub(/_/, " ") }
+        def attribute_titles
+          attribute_names.map {|f| f.to_s.capitalize.sub(/$/, ":").gsub(/_/, " ") }
         end
       end
     end

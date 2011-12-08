@@ -15,12 +15,7 @@ module GData
       def self.all(connection)
         feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain", "/feed/entry")
         entries = feed.fetch
-        entries.map do |xml|
-          obj = new(xml)
-          obj.status = :clean
-          obj.connection = connection
-          obj
-        end
+        entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end
 
       def self.get(connection, group_id)
@@ -28,12 +23,9 @@ module GData
 
         document = Nokogiri::XML(response.body)
         document.remove_namespaces!
-        entry = document.root
+        xml = document.root
 
-        obj = new(entry)
-        obj.status = :clean
-        obj.connection = connection
-        obj
+        new(:status => :clean, :connection => connection, :source => xml)
       end
 
       def to_nokogiri
