@@ -1,3 +1,17 @@
+# = gdata/provision/user.rb: implementation of the gdata provisioning userentry
+#
+# == Overview
+#
+# implementation of the gdata provisioning userentry
+#
+# == Authors
+#
+# Adrien Thebo
+#
+# == Copyright
+#
+# 2011 Puppet Labs
+#
 require 'gdata'
 require 'gdata/provision/feed'
 require 'gdata/provision/entrybase'
@@ -6,6 +20,7 @@ module GData
     class User < GData::Provision::EntryBase
 
       # The :title attribute is only used after the account has been created
+      # TODO implement :none access for attributes. This should be hidden.
       xmlattr :title, :type => :string, :xpath => "title/text()"
 
       xmlattr :user_name,       :xpath => "login/@userName"

@@ -1,3 +1,17 @@
+# = gdata/provision/group.rb: implementation of the gdata provisioning groupentry
+#
+# == Overview
+#
+# implementation of the gdata provisioning groupentry
+#
+# == Authors
+#
+# Adrien Thebo
+#
+# == Copyright
+#
+# 2011 Puppet Labs
+#
 require 'gdata'
 require 'gdata/provision/entrybase'
 require 'gdata/provision/member'
