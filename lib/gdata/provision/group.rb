@@ -19,6 +19,8 @@ module GData
   module Provision
     class Group < GData::Provision::EntryBase
 
+      # TODO copy group_id on instantiation so that groups can change
+      # their IDs without exploding
       xmlattr :group_id,          :xpath => %Q{property[@name = "groupId"]/@value}
       xmlattr :group_name,        :xpath => %Q{property[@name = "groupName"]/@value}
       xmlattr :email_permission,  :xpath => %Q{property[@name = "emailPermission"]/@value}
