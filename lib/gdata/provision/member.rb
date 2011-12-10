@@ -1,6 +1,5 @@
 # Representation of group members
 require 'gdata'
-require 'pp'
 require 'gdata/provision/entrybase'
 
 module GData
