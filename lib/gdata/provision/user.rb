@@ -64,7 +64,7 @@ module GData
 
         document = Nokogiri::XML(response.body)
         document.remove_namespaces!
-        entry = document.root
+        xml = document.root
 
         new(:status => :clean, :connection => connection, :source => xml)
       end
