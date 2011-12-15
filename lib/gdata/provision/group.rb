@@ -15,6 +15,7 @@
 require 'gdata'
 require 'gdata/provision/entrybase'
 require 'gdata/provision/member'
+require 'gdata/provision/owner'
 module GData
   module Provision
     class Group < GData::Provision::EntryBase
@@ -116,6 +117,32 @@ module GData
 
       def list_members
         GData::Provision::Member.all(@connection, @group_id)
+      end
+
+      def add_owner(ownername)
+        owner = GData::Provision::Owner.new(
+          :connection => @connection,
+          :source => {
+            :group_id => @group_id,
+            :email => ownername,
+          }
+        )
+        owner.create!
+      end
+
+      def del_owner(ownername)
+        owner = GData::Provision::Owner.new(
+          :connection => @connection,
+          :source => {
+            :group_id => @group_id,
+            :email => ownername,
+          }
+        )
+        owner.delete!
+      end
+
+      def list_owners
+        GData::Provision::Owner.all(@connection, @group_id)
       end
     end
   end
