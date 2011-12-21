@@ -32,6 +32,15 @@ module GData
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end
+
+      def self.get(connection, org_path)
+        id = GData::Provision::CustomerID.get(connection)
+        response = connection.get("/orgunit/2.0/#{id.customer_id}/#{org_path}")
+        document = Nokogiri::XML(response.body)
+        xml = document.root
+
+        new(:status => :clean, :connection => connection, :source => xml)
+      end
     end
   end
 end
