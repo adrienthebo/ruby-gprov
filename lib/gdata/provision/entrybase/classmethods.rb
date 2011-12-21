@@ -20,7 +20,7 @@ module GData
     class EntryBase
       module ClassMethods
         # Generates xmlattrs and encapsulates parsing logic
-        def xmlattr(name, options={} &block)
+        def xmlattr(name, options={}, &block)
           attr = GData::Provision::EntryBase::XMLAttr.new(name, options)
           attr.instance_eval &block if block_given?
           @attrs ||= []
