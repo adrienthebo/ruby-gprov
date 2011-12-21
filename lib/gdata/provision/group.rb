@@ -48,7 +48,6 @@ module GData
 
       def self.get(connection, group_id)
         response = connection.get("/group/2.0/:domain/#{group_id}")
-
         document = Nokogiri::XML(response.body)
         xml = document.root
 
