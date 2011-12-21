@@ -6,13 +6,13 @@ module GData
   module Provision
     class Member < GData::Provision::EntryBase
 
-      xmlattr :member_id,     :xpath => %Q{property[@name = "memberId"]/@value}
-      xmlattr :member_type,   :xpath => %Q{property[@name = "memberType"]/@value}
-      xmlattr :direct_member, :xpath => %Q{property[@name = "directMember"]/@value}
+      xmlattr :member_id,     :xpath => %Q{apps:property[@name = "memberId"]/@value}
+      xmlattr :member_type,   :xpath => %Q{apps:property[@name = "memberType"]/@value}
+      xmlattr :direct_member, :xpath => %Q{apps:property[@name = "directMember"]/@value}
       attr_accessor :group_id
 
       def self.all(connection, group_id)
-        feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/member", "/feed/entry")
+        feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/member", "/xmlns:feed/xmlns:entry")
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end

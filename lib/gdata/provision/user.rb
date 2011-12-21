@@ -21,17 +21,17 @@ module GData
 
       # The :title attribute is only used after the account has been created
       # TODO implement :none access for attributes. This should be hidden.
-      xmlattr :title, :type => :string, :xpath => "title/text()"
+      xmlattr :title, :type => :string, :xpath => "xmlns:title/text()"
 
-      xmlattr :user_name,       :xpath => "login/@userName"
-      xmlattr :suspended,       :xpath => "login/@suspended"
-      xmlattr :ip_whitelisted,  :xpath => "login/@ipWhitelisted"
-      xmlattr :admin,           :xpath => "login/@admin"
-      xmlattr :agreed_to_terms, :xpath => "login/@agreedToTerms"
-      xmlattr :limit,           :xpath => "quota/@limit"
-      xmlattr :family_name,     :xpath => "name/@familyName"
-      xmlattr :given_name,      :xpath => "name/@givenName"
-      xmlattr :change_password_at_next_login, :xpath => "login/@changePasswordAtNextLogin"
+      xmlattr :user_name,       :xpath => "apps:login/@userName"
+      xmlattr :suspended,       :xpath => "apps:login/@suspended"
+      xmlattr :ip_whitelisted,  :xpath => "apps:login/@ipWhitelisted"
+      xmlattr :admin,           :xpath => "apps:login/@admin"
+      xmlattr :agreed_to_terms, :xpath => "apps:login/@agreedToTerms"
+      xmlattr :limit,           :xpath => "apps:quota/@limit"
+      xmlattr :family_name,     :xpath => "apps:name/@familyName"
+      xmlattr :given_name,      :xpath => "apps:name/@givenName"
+      xmlattr :change_password_at_next_login, :xpath => "apps:login/@changePasswordAtNextLogin"
 
       # Adds explicit ordering to attributes for cleaner output
       def self.attribute_names
@@ -54,7 +54,7 @@ module GData
 
       # Retrieves all users within a domain
       def self.all(connection)
-        feed = GData::Provision::Feed.new(connection, "/:domain/user/2.0", "/feed/entry")
+        feed = GData::Provision::Feed.new(connection, "/:domain/user/2.0", "/xmlns:feed/xmlns:entry")
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end
@@ -63,7 +63,6 @@ module GData
         response = connection.get("/:domain/user/2.0/#{title}")
 
         document = Nokogiri::XML(response.body)
-        document.remove_namespaces!
         xml = document.root
 
         new(:status => :clean, :connection => connection, :source => xml)

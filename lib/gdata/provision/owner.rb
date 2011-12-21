@@ -6,11 +6,11 @@ module GData
   module Provision
     class Owner < GData::Provision::EntryBase
 
-      xmlattr :email, :xpath => %Q{property[@name = "email"]/@value}
+      xmlattr :email, :xpath => %Q{apps:property[@name = "email"]/@value}
       attr_accessor :group_id
 
       def self.all(connection, group_id)
-        feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/owner", "/feed/entry")
+        feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/owner", "/xmlns:feed/xmlns:entry")
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end

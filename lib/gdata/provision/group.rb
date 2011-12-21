@@ -22,11 +22,11 @@ module GData
 
       # TODO copy group_id on instantiation so that groups can change
       # their IDs without exploding
-      xmlattr :group_id,          :xpath => %Q{property[@name = "groupId"]/@value}
-      xmlattr :group_name,        :xpath => %Q{property[@name = "groupName"]/@value}
-      xmlattr :email_permission,  :xpath => %Q{property[@name = "emailPermission"]/@value}
-      xmlattr :permission_preset, :xpath => %Q{property[@name = "permissionPreset"]/@value}
-      xmlattr :description,       :xpath => %Q{property[@name = "description"]/@value}
+      xmlattr :group_id,          :xpath => %Q{apps:property[@name = "groupId"]/@value}
+      xmlattr :group_name,        :xpath => %Q{apps:property[@name = "groupName"]/@value}
+      xmlattr :email_permission,  :xpath => %Q{apps:property[@name = "emailPermission"]/@value}
+      xmlattr :permission_preset, :xpath => %Q{apps:property[@name = "permissionPreset"]/@value}
+      xmlattr :description,       :xpath => %Q{apps:property[@name = "description"]/@value}
 
       # Retrieves all users within a domain
       def self.all(connection, options={})
@@ -41,7 +41,7 @@ module GData
           end
         end
 
-        feed = GData::Provision::Feed.new(connection, url, "/feed/entry")
+        feed = GData::Provision::Feed.new(connection, url, "/xmlns:feed/xmlns:entry")
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end
@@ -50,7 +50,6 @@ module GData
         response = connection.get("/group/2.0/:domain/#{group_id}")
 
         document = Nokogiri::XML(response.body)
-        document.remove_namespaces!
         xml = document.root
 
         new(:status => :clean, :connection => connection, :source => xml)

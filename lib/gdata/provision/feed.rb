@@ -9,8 +9,8 @@ module GData
 
       attr_reader :results
       def initialize(connection, path, xpath)
-        @connection  = connection
-        @path       = path
+        @connection = connection
+        @url        = path
         @xpath      = xpath
 
         @results = []
@@ -24,13 +24,10 @@ module GData
       private
 
       def retrieve_page
-        response = @connection.get(@path)
+        response = @connection.get(@url)
 
         if response.code == 200
           document = Nokogiri::XML(response.body)
-          # Stripping out namespaces isn't the best solution, but it's the
-          # easiest solution until I can add namespacing to all the xpath defs
-          document.remove_namespaces!
           entries = document.xpath(@xpath)
 
           @results.concat(entries.to_a)
@@ -38,6 +35,7 @@ module GData
       end
 
       def retrieve_all
+        raise NotImplementedError
       end
 
     end
