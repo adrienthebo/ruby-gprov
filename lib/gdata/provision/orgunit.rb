@@ -16,6 +16,7 @@ require 'gdata'
 require 'gdata/provision/feed'
 require 'gdata/provision/entrybase'
 require 'gdata/provision/customerid'
+require 'gdata/provision/orgmember'
 module GData
   module Provision
     class OrgUnit < GData::Provision::EntryBase
@@ -40,6 +41,10 @@ module GData
         xml = document.root
 
         new(:status => :clean, :connection => connection, :source => xml)
+      end
+
+      def list_members
+        GData::Provision::OrgMember.all(connection, @org_unit_path)
       end
     end
   end
