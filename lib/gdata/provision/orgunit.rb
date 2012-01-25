@@ -43,6 +43,37 @@ module GData
         new(:status => :clean, :connection => connection, :source => xml)
       end
 
+      def to_nokogiri
+        base_document = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+          xml.entry('xmlns:atom' => 'http://www.w3.org/2005/Atom',
+                    'xmlns:apps' => 'http://schemas.google.com/apps/2006',
+                    'xmlns:gd'   => "http://schemas.google.com/g/2005" ) {
+
+            # Namespaces cannot be used until they are declared, so we need to
+            # retroactively declare the namespace of the parent
+            xml.parent.namespace = xml.parent.namespace_definitions.select {|ns| ns.prefix == "atom"}.first
+
+            xml['apps'].property("name" => "name", "value" => @name)
+            xml['apps'].property("name" => "description", "value" => @description)
+            xml['apps'].property("name" => "parentOrgUnitPath", "value" => @parent_org_unit_path)
+            xml['apps'].property("name" => "blockInheritance", "value" => @block_inheritance)
+          }
+        end
+      end
+
+      # POST https://apps-apis.google.com/a/feeds/orgunit/2.0/the customerId
+      def create!
+        # xxx cache this?
+        id = gdata::provision::customerid.get(connection)
+        response = connection.post("/orgunit/2.0/#{id.customer_id}")
+      end
+
+      def update!
+        # xxx cache this?
+        id = gdata::provision::customerid.get(connection)
+        response = connection.put("/orgunit/2.0/#{id.customer_id}/#{@org_unit_path}")
+      end
+
       def list_members
         GData::Provision::OrgMember.all(connection, @org_unit_path)
       end
