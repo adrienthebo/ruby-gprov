@@ -72,6 +72,12 @@ module GData
           }
         end
       end
+
+      def update!
+        id = GData::Provision::CustomerID.get(connection)
+        response = connection.put("/orguser/2.0/#{id.customer_id}/#{@org_user_email}", {:body => to_nokogiri.to_xml})
+        status = :clean
+      end
     end
   end
 end
