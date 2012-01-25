@@ -23,15 +23,31 @@ module GData
       xmlattr :org_user_email, :xpath => %Q{apps:property[@name = "orgUserEmail"]/@value}
       xmlattr :org_unit_path,  :xpath => %Q{apps:property[@name = "orgUnitPath"]/@value}
 
-      # The URL format of this alone indicates that this should be part of the
-      # orgunit class, but this is modelled better as a separate entity
-      def self.all(connection, orgunit)
+      # Retrieve all organization users in the domain.
+      def self.all(connection, options = {:target => :all})
         id = GData::Provision::CustomerID.get(connection)
-        url = "/orguser/2.0/#{id.customer_id}?get=children&orgUnitPath=#{orgunit}"
+
+        case options[:target]
+        when :orgunit
+          # XXX validation
+          url = "/orguser/2.0/#{id.customer_id}?get=children&orgUnitPath=#{options[:orgunit]}"
+        when :all
+          url = "/orguser/2.0/#{id.customer_id}?get=all"
+        end
 
         feed = GData::Provision::Feed.new(connection, url, "/xmlns:feed/xmlns:entry")
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
+      end
+
+      def self.get(connection, email)
+        id = GData::Provision::CustomerID.get(connection)
+        response = connection.get("/orguser/2.0/#{id.customer_id}/#{email}")
+
+        document = Nokogiri::XML(response.body)
+        xml = document.root
+
+        new(:status => :clean, :connection => connection, :source => xml)
       end
 
       # This attribute will only be sent and never received
