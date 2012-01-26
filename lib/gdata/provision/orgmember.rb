@@ -67,8 +67,8 @@ module GData
             # retroactively declare the namespace of the parent
             xml.parent.namespace = xml.parent.namespace_definitions.select {|ns| ns.prefix == "atom"}.first
 
-            xml['apps'].property("name" => "orgUserPath", "value" => @org_user_path)
-            xml['apps'].property("name" => "oldOrgUserPath", "value" => @old_org_user_path)
+            xml['apps'].property("name" => "orgUnitPath", "value" => @org_unit_path)
+            xml['apps'].property("name" => "oldOrgUnitPath", "value" => @old_org_unit_path)
           }
         end
       end
