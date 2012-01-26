@@ -61,17 +61,24 @@ module GData
         end
       end
 
-      # POST https://apps-apis.google.com/a/feeds/orgunit/2.0/the customerId
       def create!
         # xxx cache this?
-        id = gdata::provision::customerid.get(connection)
+        id = GData::Provision::CustomerID.get(connection)
         response = connection.post("/orgunit/2.0/#{id.customer_id}")
+        status = :clean
       end
 
       def update!
         # xxx cache this?
-        id = gdata::provision::customerid.get(connection)
+        id = GData::Provision::Customerid.get(connection)
         response = connection.put("/orgunit/2.0/#{id.customer_id}/#{@org_unit_path}")
+        status = :clean
+      end
+
+      def delete!
+        id = GData::Provision::Customerid.get(connection)
+        response = connection.delete("/orgunit/2.0/#{id.customer_id}/#{@org_unit_path}")
+        status = :deleted
       end
 
       def list_members
