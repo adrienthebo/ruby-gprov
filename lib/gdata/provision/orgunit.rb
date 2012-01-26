@@ -82,7 +82,7 @@ module GData
       end
 
       def list_members
-        GData::Provision::OrgMember.all(connection, @org_unit_path)
+        GData::Provision::OrgMember.all(connection, :target => :orgunit, :orgunit => @org_unit_path)
       end
     end
   end
