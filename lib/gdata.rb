@@ -1,7 +1,4 @@
-
-module GData
-  VERSION = "0.0.1"
-end
+require 'gdata/version'
 require 'gdata/auth'
 require 'gdata/connection'
 require 'gdata/provision'
