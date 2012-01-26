@@ -48,6 +48,10 @@ module GData
     [:put, :get, :post, :delete].each do |verb|
       define_method verb do |path, *args|
 
+        # Assign default arguments and validate passed arguments
+        if path.nil?
+          raise "#{self.class}##{verb} requires a non-nil path"
+        end
         options = *args
         options ||= {}
         options.merge! default_headers
