@@ -1,8 +1,8 @@
-# = gdata/provision/user.rb: implementation of the gdata provisioning userentry
+# = gprov/provision/user.rb: implementation of the gprov provisioning userentry
 #
 # == Overview
 #
-# implementation of the gdata provisioning userentry
+# implementation of the gprov provisioning userentry
 #
 # == Authors
 #
@@ -12,12 +12,12 @@
 #
 # 2011 Puppet Labs
 #
-require 'gdata'
-require 'gdata/provision/feed'
-require 'gdata/provision/entrybase'
-module GData
+require 'gprov'
+require 'gprov/provision/feed'
+require 'gprov/provision/entrybase'
+module GProv
   module Provision
-    class User < GData::Provision::EntryBase
+    class User < GProv::Provision::EntryBase
 
       # The :title attribute is only used after the account has been created
       # TODO implement :none access for attributes. This should be hidden.
@@ -54,7 +54,7 @@ module GData
 
       # Retrieves all users within a domain
       def self.all(connection)
-        feed = GData::Provision::Feed.new(connection, "/:domain/user/2.0", "/xmlns:feed/xmlns:entry")
+        feed = GProv::Provision::Feed.new(connection, "/:domain/user/2.0", "/xmlns:feed/xmlns:entry")
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end

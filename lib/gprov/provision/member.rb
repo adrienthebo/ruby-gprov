@@ -1,10 +1,10 @@
 # Representation of group members
-require 'gdata'
-require 'gdata/provision/entrybase'
+require 'gprov'
+require 'gprov/provision/entrybase'
 
-module GData
+module GProv
   module Provision
-    class Member < GData::Provision::EntryBase
+    class Member < GProv::Provision::EntryBase
 
       xmlattr :member_id,     :xpath => %Q{apps:property[@name = "memberId"]/@value}
       xmlattr :member_type,   :xpath => %Q{apps:property[@name = "memberType"]/@value}
@@ -12,7 +12,7 @@ module GData
       attr_accessor :group_id
 
       def self.all(connection, group_id)
-        feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/member", "/xmlns:feed/xmlns:entry")
+        feed = GProv::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/member", "/xmlns:feed/xmlns:entry")
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end

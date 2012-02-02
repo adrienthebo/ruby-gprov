@@ -1,4 +1,4 @@
-# = gdata/connection.rb: common interface for the google apps API
+# = gprov/connection.rb: common interface for the google apps API
 #
 # == Overview
 #
@@ -18,9 +18,9 @@
 # 2011 Puppet Labs
 #
 require 'httparty'
-require 'gdata/error'
+require 'gprov/error'
 
-module GData
+module GProv
   class Connection
     include HTTParty
     base_uri "https://apps-apis.google.com/a/feeds/"
@@ -69,14 +69,14 @@ module GData
           output = self.class.send(verb, path, options)
           case output.code
           when 401
-            raise GData::Error::TokenInvalid.new(output)
+            raise GProv::Error::TokenInvalid.new(output)
           when 403
-            raise GData::Error::InputInvalid.new(output)
+            raise GProv::Error::InputInvalid.new(output)
           when 503
-            raise GData::Error::QuotaExceeded.new(output)
+            raise GProv::Error::QuotaExceeded.new(output)
           else
             if ! output.success?
-              raise GData::Error.new(output)
+              raise GProv::Error.new(output)
             else
               output
             end

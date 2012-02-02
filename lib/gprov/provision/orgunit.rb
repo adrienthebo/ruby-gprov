@@ -1,8 +1,8 @@
-# = gdata/provision/orgunit.rb
+# = gprov/provision/orgunit.rb
 #
 # == Overview
 #
-# implementation of the gdata organizational unit
+# implementation of the gprov organizational unit
 #
 # == Authors
 #
@@ -12,14 +12,14 @@
 #
 # 2011 Puppet Labs
 #
-require 'gdata'
-require 'gdata/provision/feed'
-require 'gdata/provision/entrybase'
-require 'gdata/provision/customerid'
-require 'gdata/provision/orgmember'
-module GData
+require 'gprov'
+require 'gprov/provision/feed'
+require 'gprov/provision/entrybase'
+require 'gprov/provision/customerid'
+require 'gprov/provision/orgmember'
+module GProv
   module Provision
-    class OrgUnit < GData::Provision::EntryBase
+    class OrgUnit < GProv::Provision::EntryBase
 
       xmlattr :name,                 :xpath => %Q{apps:property[@name = "name"]/@value}
       xmlattr :description,          :xpath => %Q{apps:property[@name = "description"]/@value}
@@ -28,14 +28,14 @@ module GData
       xmlattr :block_inheritance,    :xpath => %Q{apps:property[@name = "blockInheritance"]/@value}
 
       def self.all(connection)
-        id = GData::Provision::CustomerID.get(connection)
-        feed = GData::Provision::Feed.new(connection, "/orgunit/2.0/#{id.customer_id}?get=all", "/xmlns:feed/xmlns:entry")
+        id = GProv::Provision::CustomerID.get(connection)
+        feed = GProv::Provision::Feed.new(connection, "/orgunit/2.0/#{id.customer_id}?get=all", "/xmlns:feed/xmlns:entry")
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end
 
       def self.get(connection, org_path)
-        id = GData::Provision::CustomerID.get(connection)
+        id = GProv::Provision::CustomerID.get(connection)
         response = connection.get("/orgunit/2.0/#{id.customer_id}/#{org_path}")
         document = Nokogiri::XML(response.body)
         xml = document.root
@@ -63,26 +63,26 @@ module GData
 
       def create!
         # xxx cache this?
-        id = GData::Provision::CustomerID.get(connection)
+        id = GProv::Provision::CustomerID.get(connection)
         response = connection.post("/orgunit/2.0/#{id.customer_id}")
         status = :clean
       end
 
       def update!
         # xxx cache this?
-        id = GData::Provision::Customerid.get(connection)
+        id = GProv::Provision::Customerid.get(connection)
         response = connection.put("/orgunit/2.0/#{id.customer_id}/#{@org_unit_path}")
         status = :clean
       end
 
       def delete!
-        id = GData::Provision::Customerid.get(connection)
+        id = GProv::Provision::Customerid.get(connection)
         response = connection.delete("/orgunit/2.0/#{id.customer_id}/#{@org_unit_path}")
         status = :deleted
       end
 
       def list_members
-        GData::Provision::OrgMember.all(connection, :target => :orgunit, :orgunit => @org_unit_path)
+        GProv::Provision::OrgMember.all(connection, :target => :orgunit, :orgunit => @org_unit_path)
       end
     end
   end

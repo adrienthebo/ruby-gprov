@@ -1,4 +1,4 @@
-Ruby-GData
+Ruby-GProv
 ==========
 
 Description

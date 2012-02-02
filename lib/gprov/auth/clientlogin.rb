@@ -1,4 +1,4 @@
-# = gdata/auth/clientlogin.rb Implements the google clientLogin authentication method
+# = gprov/auth/clientlogin.rb Implements the google clientLogin authentication method
 #
 # == Overview
 #
@@ -14,7 +14,7 @@
 # 2011 Puppet Labs
 #
 require 'httparty'
-module GData
+module GProv
   module Auth
     class ClientLogin
       include HTTParty

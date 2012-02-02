@@ -1,1 +1,0 @@
-require 'gdata/auth/clientlogin'

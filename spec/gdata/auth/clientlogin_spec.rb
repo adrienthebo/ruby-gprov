@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe GData::Auth::ClientLogin do
+describe GProv::Auth::ClientLogin do
 
   before :each do
-    @klass = GData::Auth::ClientLogin
+    @klass = GProv::Auth::ClientLogin
     @instance = @klass.new('test', 'password', 'service')
     @dummy_form = {:body => {
       "accountType" => "HOSTED",
@@ -14,7 +14,7 @@ describe GData::Auth::ClientLogin do
   end
 
   it "should use the google ClientLogin uri" do
-    GData::Auth::ClientLogin.base_uri.should == "https://www.google.com/accounts/ClientLogin"
+    GProv::Auth::ClientLogin.base_uri.should == "https://www.google.com/accounts/ClientLogin"
   end
 
   it "should have a token method" do

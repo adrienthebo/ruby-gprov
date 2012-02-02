@@ -1,3 +1,3 @@
-module GData
+module GProv
   VERSION = "0.0.2"
 end

@@ -1,4 +1,4 @@
-# = gdata/provision/entrybase.rb: base class for provisioning api objects
+# = gprov/provision/entrybase.rb: base class for provisioning api objects
 #
 # == Overview
 #
@@ -13,12 +13,12 @@
 # 2011 Puppet Labs
 #
 require 'nokogiri'
-require 'gdata/provision/entrybase/classmethods'
-module GData
+require 'gprov/provision/entrybase/classmethods'
+module GProv
   module Provision
     class EntryBase
 
-      extend GData::Provision::EntryBase::ClassMethods
+      extend GProv::Provision::EntryBase::ClassMethods
 
       # Status with respect to google.
       # TODO protected?

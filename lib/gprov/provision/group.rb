@@ -1,8 +1,8 @@
-# = gdata/provision/group.rb: implementation of the gdata provisioning groupentry
+# = gprov/provision/group.rb: implementation of the gprov provisioning groupentry
 #
 # == Overview
 #
-# implementation of the gdata provisioning groupentry
+# implementation of the gprov provisioning groupentry
 #
 # == Authors
 #
@@ -12,13 +12,13 @@
 #
 # 2011 Puppet Labs
 #
-require 'gdata'
-require 'gdata/provision/entrybase'
-require 'gdata/provision/member'
-require 'gdata/provision/owner'
-module GData
+require 'gprov'
+require 'gprov/provision/entrybase'
+require 'gprov/provision/member'
+require 'gprov/provision/owner'
+module GProv
   module Provision
-    class Group < GData::Provision::EntryBase
+    class Group < GProv::Provision::EntryBase
 
       # TODO copy group_id on instantiation so that groups can change
       # their IDs without exploding
@@ -41,7 +41,7 @@ module GData
           end
         end
 
-        feed = GData::Provision::Feed.new(connection, url, "/xmlns:feed/xmlns:entry")
+        feed = GProv::Provision::Feed.new(connection, url, "/xmlns:feed/xmlns:entry")
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end
@@ -92,7 +92,7 @@ module GData
       end
 
       def add_member(membername)
-        member = GData::Provision::Member.new(
+        member = GProv::Provision::Member.new(
           :connection => @connection,
           :source => {
             :group_id => @group_id,
@@ -103,7 +103,7 @@ module GData
       end
 
       def del_member(membername)
-        member = GData::Provision::Member.new(
+        member = GProv::Provision::Member.new(
           :connection => @connection,
           :source => {
             :group_id => @group_id,
@@ -114,11 +114,11 @@ module GData
       end
 
       def list_members
-        GData::Provision::Member.all(@connection, @group_id)
+        GProv::Provision::Member.all(@connection, @group_id)
       end
 
       def add_owner(ownername)
-        owner = GData::Provision::Owner.new(
+        owner = GProv::Provision::Owner.new(
           :connection => @connection,
           :source => {
             :group_id => @group_id,
@@ -129,7 +129,7 @@ module GData
       end
 
       def del_owner(ownername)
-        owner = GData::Provision::Owner.new(
+        owner = GProv::Provision::Owner.new(
           :connection => @connection,
           :source => {
             :group_id => @group_id,
@@ -140,7 +140,7 @@ module GData
       end
 
       def list_owners
-        GData::Provision::Owner.all(@connection, @group_id)
+        GProv::Provision::Owner.all(@connection, @group_id)
       end
     end
   end

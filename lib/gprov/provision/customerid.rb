@@ -1,4 +1,4 @@
-# = gdata/customerid.rb
+# = gprov/customerid.rb
 #
 # == Overview
 #
@@ -12,11 +12,11 @@
 #
 # 2011 Puppet Labs
 #
-require 'gdata'
-require 'gdata/provision/entrybase'
-module GData
+require 'gprov'
+require 'gprov/provision/entrybase'
+module GProv
   module Provision
-    class CustomerID < GData::Provision::EntryBase
+    class CustomerID < GProv::Provision::EntryBase
 
       xmlattr :customer_id, :xpath => %Q{apps:property[@name = "customerId"]/@value}
       xmlattr :name,        :xpath => %Q{apps:property[@name = "name"]/@value}

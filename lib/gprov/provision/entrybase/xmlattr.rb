@@ -1,4 +1,4 @@
-# = gdata/provision/entrybase/xmlattr.rb: attribute accessors with xml annotations
+# = gprov/provision/entrybase/xmlattr.rb: attribute accessors with xml annotations
 #
 # == Overview
 #
@@ -27,7 +27,7 @@
 #
 require 'nokogiri'
 
-module GData
+module GProv
   module Provision
     class EntryBase
       class XMLAttr

@@ -1,4 +1,4 @@
-# = gdata/provision/entrybase/classmethods.rb
+# = gprov/provision/entrybase/classmethods.rb
 #
 # == Overview
 #
@@ -14,14 +14,14 @@
 # 2011 Puppet Labs
 #
 require 'nokogiri'
-require 'gdata/provision/entrybase/xmlattr'
-module GData
+require 'gprov/provision/entrybase/xmlattr'
+module GProv
   module Provision
     class EntryBase
       module ClassMethods
         # Generates xmlattrs and encapsulates parsing logic
         def xmlattr(name, options={}, &block)
-          attr = GData::Provision::EntryBase::XMLAttr.new(name, options)
+          attr = GProv::Provision::EntryBase::XMLAttr.new(name, options)
           attr.instance_eval &block if block_given?
           @attrs ||= []
           @attrs << attr

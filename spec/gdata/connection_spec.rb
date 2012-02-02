@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe GData::Connection do
+describe GProv::Connection do
 
   before :each do
-    @klass = GData::Connection
+    @klass = GProv::Connection
     @instance = @klass.new("domain", "token")
 
     @expected_options = {:headers => {

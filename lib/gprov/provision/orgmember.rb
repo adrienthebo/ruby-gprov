@@ -1,4 +1,4 @@
-# = gdata/provision/orgmember.rb
+# = gprov/provision/orgmember.rb
 #
 # == Overview
 #
@@ -12,12 +12,12 @@
 #
 # 2011 Puppet Labs
 #
-require 'gdata'
-require 'gdata/provision/feed'
-require 'gdata/provision/entrybase'
-module GData
+require 'gprov'
+require 'gprov/provision/feed'
+require 'gprov/provision/entrybase'
+module GProv
   module Provision
-    class OrgMember < GData::Provision::EntryBase
+    class OrgMember < GProv::Provision::EntryBase
 
       # This attribute will only be received and never sent
       xmlattr :org_user_email, :xpath => %Q{apps:property[@name = "orgUserEmail"]/@value}
@@ -25,7 +25,7 @@ module GData
 
       # Retrieve all organization users in the domain.
       def self.all(connection, options = {:target => :all})
-        id = GData::Provision::CustomerID.get(connection)
+        id = GProv::Provision::CustomerID.get(connection)
 
         case options[:target]
         when :orgunit
@@ -35,13 +35,13 @@ module GData
           url = "/orguser/2.0/#{id.customer_id}?get=all"
         end
 
-        feed = GData::Provision::Feed.new(connection, url, "/xmlns:feed/xmlns:entry")
+        feed = GProv::Provision::Feed.new(connection, url, "/xmlns:feed/xmlns:entry")
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end
 
       def self.get(connection, email)
-        id = GData::Provision::CustomerID.get(connection)
+        id = GProv::Provision::CustomerID.get(connection)
         response = connection.get("/orguser/2.0/#{id.customer_id}/#{email}")
 
         document = Nokogiri::XML(response.body)
@@ -74,7 +74,7 @@ module GData
       end
 
       def update!
-        id = GData::Provision::CustomerID.get(connection)
+        id = GProv::Provision::CustomerID.get(connection)
         response = connection.put("/orguser/2.0/#{id.customer_id}/#{@org_user_email}", {:body => to_nokogiri.to_xml})
         status = :clean
       end

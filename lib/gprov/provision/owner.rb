@@ -1,16 +1,16 @@
 # Representation of group owners
-require 'gdata'
-require 'gdata/provision/entrybase'
+require 'gprov'
+require 'gprov/provision/entrybase'
 
-module GData
+module GProv
   module Provision
-    class Owner < GData::Provision::EntryBase
+    class Owner < GProv::Provision::EntryBase
 
       xmlattr :email, :xpath => %Q{apps:property[@name = "email"]/@value}
       attr_accessor :group_id
 
       def self.all(connection, group_id)
-        feed = GData::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/owner", "/xmlns:feed/xmlns:entry")
+        feed = GProv::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/owner", "/xmlns:feed/xmlns:entry")
         entries = feed.fetch
         entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
       end

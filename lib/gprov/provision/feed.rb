@@ -1,9 +1,9 @@
 # Generic representation of the various types of feeds available from the
 # provisioning api
-require 'gdata'
+require 'gprov'
 require 'nokogiri'
 
-module GData
+module GProv
   module Provision
     class Feed
 

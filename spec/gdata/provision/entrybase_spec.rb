@@ -1,20 +1,20 @@
 require 'spec_helper'
 
-class FakeEntry < GData::Provision::EntryBase
+class FakeEntry < GProv::Provision::EntryBase
 
   xml_attr_accessor :test, :xpath => "/foo/bar/text()"
   xml_attr_accessor :test_transform, :xpath => "/foo/bar/text()", :transform => lambda {|x| x.upcase}
 end
 
-describe GData::Provision::EntryBase do
+describe GProv::Provision::EntryBase do
 
   before do
-    @klass = GData::Provision::EntryBase
+    @klass = GProv::Provision::EntryBase
     @test_klass = FakeEntry
     @instance = @test_klass.new
   end
 
-  describe GData::Provision::EntryBase::ClassMethods do
+  describe GProv::Provision::EntryBase::ClassMethods do
 
     [:xml_attr_accessor, :xml_to_hash, :attributes].each do |method|
       it "method #{method} should be a class method" do
