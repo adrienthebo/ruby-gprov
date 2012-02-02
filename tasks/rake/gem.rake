@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'rubygems/package_task'
 
-PKG_FILES = Dir["lib/**/*"] + Dir["[A-Z]*"]
+PKG_FILES = Dir["lib/**/*"] + Dir["spec/**/*"] + Dir["[A-Z]*"]
 
 spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
