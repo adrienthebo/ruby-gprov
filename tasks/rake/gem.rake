@@ -15,6 +15,8 @@ spec = Gem::Specification.new do |s|
   s.version = GProv::VERSION
   s.add_dependency('httparty', ">= 0.8")
   s.add_dependency('nokogiri', ">= 1.5")
+  s.add_development_dependency('rspec', '>= 2')
+  s.add_development_dependency('mocha', '>= 0')
   s.require_path = 'lib'
 end
 
