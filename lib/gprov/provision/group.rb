@@ -87,7 +87,7 @@ module GProv
       end
 
       def delete!
-        response = connection.put("/group/2.0/:domain/#{group_id}")
+        response = connection.delete("/group/2.0/:domain/#{group_id}")
         status = :deleted
       end
 
