@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe GProv::Auth::ClientLogin do
 
-  before :each do
-    @klass = GProv::Auth::ClientLogin
-    @instance = @klass.new('test', 'password', 'service')
-    @dummy_form = {:body => {
+  let(:klass) { GProv::Auth::ClientLogin }
+
+  let(:dummy_form) do
+    {:body => {
       "accountType" => "HOSTED",
       "Email"       => "test",
       "Passwd"      => "password",
@@ -13,35 +13,36 @@ describe GProv::Auth::ClientLogin do
     }}
   end
 
+  subject { GProv::Auth::ClientLogin.new('test', 'password', 'service') }
+
   it "should use the google ClientLogin uri" do
-    GProv::Auth::ClientLogin.base_uri.should == "https://www.google.com/accounts/ClientLogin"
+    klass.base_uri.should == "https://www.google.com/accounts/ClientLogin"
   end
 
-  it "should have a token method" do
-    @instance.respond_to?(:token).should == true
-  end
+  it { should respond_to :token }
 
-  it "should post valid form data to the uri specified base_uri" do
-    stub_response = stub :response
-    stub_response.stubs(:code).returns 200
-    stub_response.stubs(:body).returns "Auth=dummy\n"
-    @klass.expects(:post).with('', @dummy_form).returns stub_response
-    @instance.token
-  end
+  describe "when posting" do
+    let(:response) { stub :response }
 
-  it "should return nil if authorization failed" do
-    stub_response = stub :response
-    stub_response.stubs(:code).returns 403
-    @klass.expects(:post).with('', @dummy_form).returns stub_response
-    @instance.token.should be_nil
-  end
+    before :each do
+      klass.stubs(:post).with('', dummy_form).returns response
+    end
 
-  it "should return the token if authorization succeeded" do
-    stub_response = stub :response
-    stub_response.stubs(:code).returns 200
-    stub_response.stubs(:body).returns "Auth=dummy\n"
-    @klass.expects(:post).with('', @dummy_form).returns stub_response
-    @instance.token.should == "dummy"
-  end
+    describe "invalid credentials" do
+      before do
+        response.stubs(:code).returns 403
+      end
 
+      its(:token) { should be_nil }
+    end
+
+    describe "valid credentials" do
+      before do
+        response.stubs(:code).returns 200
+        response.stubs(:body).returns "Auth=dummy\n"
+      end
+
+      its(:token) { should == "dummy" }
+    end
+  end
 end
