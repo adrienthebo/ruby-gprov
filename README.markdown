@@ -1,13 +1,19 @@
 Ruby-GProv
 ==========
 
+Synopsis
+--------
+
+This is a ruby implementation of the Ruby implementation of the [Google Provisioning API][api].
+
 Description
 -----------
 
-This is a ruby implementation of the Ruby implementation of the [Google
-Provisioning API][api]. It's designed to provide an object oriented approach to
-the API instead of the weird procedural approach that's the straight
-implementation. By and large it's modelled in the manner of CRUD.
+The specification of the Google Provisioning API is primarily procedural in
+nature, despite that all the languages that Google provides bindings for are
+object oriented. This implementation attempts to provide a more natural
+interface to that API. Where applicable, objects present a CRUD-like set of
+methods to perform operations on the underlying system.
 
 [api]: http://code.google.com/googleapps/domain/gdata_provisioning_api_v2.0_reference.html "Google Provisioning API v2.0"
 
