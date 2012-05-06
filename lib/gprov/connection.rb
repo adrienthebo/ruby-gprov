@@ -1,4 +1,4 @@
-# = gprov/connection.rb: common interface for the google apps API
+# = GProv::Connection: common interface for the google apps API
 #
 # == Overview
 #
@@ -52,8 +52,15 @@ module GProv
         if path.nil?
           raise "#{self.class}##{verb} requires a non-nil path"
         end
-        options = *args
-        options ||= {}
+
+        # If extra headers were passed in, explode the containing array. Else,
+        # create a new empty hash. When that's done, merge the Google API
+        # headers.
+        if args.empty?
+          ptions = {}
+        else
+          options = *args
+        end
         options.merge! default_headers
 
         # Interpolate the :domain substring into a url to allow for the domain
