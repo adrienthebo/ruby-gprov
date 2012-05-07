@@ -68,8 +68,8 @@ module GProv
         path.gsub!(":domain", @domain)
 
         if options[:noop] or @options[:noop]
-          $stderr.puts "Would have attempted the following call"
-          $stderr.puts "#{verb} #{path} #{options.inspect}"
+          warn "Would have attempted the following call"
+          warn "#{verb} #{path} #{options.inspect}"
         else
           # Return the request to the calling class so that the caller can
           # determine the outcome of the request.
