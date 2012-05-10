@@ -56,10 +56,10 @@ module GProv
         # If extra headers were passed in, explode the containing array. Else,
         # create a new empty hash. When that's done, merge the Google API
         # headers.
-        if args.empty?
-          ptions = {}
-        else
-          options = *args
+        case args.length
+        when 0 then options = {}
+        when 1 then options = args.pop
+        else options = *args
         end
         options.merge! default_headers
 
