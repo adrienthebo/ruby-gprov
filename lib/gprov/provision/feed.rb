@@ -31,6 +31,8 @@ module GProv
           entries = document.xpath(@xpath)
 
           @results.concat(entries.to_a)
+        else
+          raise RuntimeError, "Failed to retrieve #{url}: HTTP #{response.code} #{response.body}"
         end
       end
 
