@@ -54,8 +54,13 @@ describe GProv::Connection do
           klass.expects(verb).with("/domain", expected_options).returns @stub_request
           subject.send(verb, "/:domain")
         end
+
+        it "should require a non-nil path" do
+          expect {
+            subject.send(verb, nil)
+          }.to raise_error ArgumentError, /non-nil/
+        end
       end
     end
   end
 end
-
