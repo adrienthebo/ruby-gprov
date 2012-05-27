@@ -23,7 +23,6 @@ describe GProv::Connection do
     subject.default_headers.should == expected_options
   end
 
-
   describe "http instance method" do
     [:put, :get, :post, :delete].each do |verb|
 
@@ -31,27 +30,30 @@ describe GProv::Connection do
 
       describe "##{verb}" do
         before do
-          xml = %Q{<?xml version="1.0" encoding="UTF-8"?>\n<test xml="pointy" />}
-          @stub_request = mock
-          @stub_request.stubs(:code).returns 200
-          @stub_request.stubs(:success?).returns true
-          @stub_request.stubs(:class).returns HTTParty::Response
         end
 
+        let(:request) do
+          xml = %Q{<?xml version="1.0" encoding="UTF-8"?>\n<test xml="pointy" />}
+          stub_request = stub 'request'
+          stub_request.stubs(:code).returns 200
+          stub_request.stubs(:success?).returns true
+          stub_request.stubs(:class).returns HTTParty::Response
+          stub_request
+        end
 
         it "should be forwarded to the class" do
-          klass.expects(verb).returns @stub_request
+          klass.expects(verb).returns request
           subject.send(verb, '')
         end
 
         it "should return the http response" do
-          klass.expects(verb).returns @stub_request
+          klass.expects(verb).returns request
           output = subject.send(verb, "/url")
           output.class.should == HTTParty::Response
         end
 
         it "should interpolate the :domain substring" do
-          klass.expects(verb).with("/domain", expected_options).returns @stub_request
+          klass.expects(verb).with("/domain", expected_options).returns request
           subject.send(verb, "/:domain")
         end
 
