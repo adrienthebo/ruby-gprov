@@ -48,7 +48,7 @@ module GProv
           if [:numeric, :string, :bool].include? val
             @type = val
           else
-            raise ArgumentException
+            raise ArgumentError, "#{@type} is not recognized as a valid format type"
           end
 
           @type
@@ -73,6 +73,8 @@ module GProv
             else # XXX sketchy
               @value = false
             end
+          else
+            raise ArgumentError, "Unable to format data: #{@type} is not recognized as a valid format type"
           end
           @value
         end
