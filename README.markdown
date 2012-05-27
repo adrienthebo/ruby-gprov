@@ -24,3 +24,14 @@ Examples
 
 [gtool](https://github.com/adrienthebo/gtool) - a command line interface to the
 provisioning API.
+
+Development
+-----------
+
+  * Source: https://github.com/adrienthebo/ruby-gprov
+  * Issues: https://github.com/adrienthebo/ruby-gprov/issues
+
+This is alpha software. While I've done extensive real world testing of this
+myself, it's not feature complete and doesn't have enough test coverage. Please
+file bug reports and let me know where it's lacking; I'm very interested in
+improving it!
