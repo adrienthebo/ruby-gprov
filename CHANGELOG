@@ -1,0 +1,8 @@
+Changelog
+=========
+
+0.0.8
+
+  - (gprov #4) Perform full fetches of paginates results
+  - Expand and clean up test coverage
+  - Better comments
