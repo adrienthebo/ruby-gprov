@@ -31,6 +31,7 @@ module GProv
       # Possible data sources:
       #  * Hash of attribute names and values
       #  * A nokogiri node containing the root of the object
+      #  * nothing, as in we have a fresh object.
       def initialize(opts={})
 
         @status = (opts[:status] || :new)
@@ -50,12 +51,12 @@ module GProv
         when NilClass
           # New object!
         else
-          raise
+          raise ArgumentError, "unrecognized object source #{opts[:source]}"
         end
       end
 
-      # Takes all xml_attr_accessors defined and an xml document and
-      # extracts the values from the xml into a hash.
+      # Takes all xmlattrs defined against this object, and a given XML
+      # document, and converts each xmlattr into the according value.
       def xml_to_hash(xml)
         h = {}
         if attrs = self.class.attributes
