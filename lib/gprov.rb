@@ -1,3 +1,7 @@
+
+module GProv
+end
+
 require 'gprov/version'
 require 'gprov/auth'
 require 'gprov/connection'

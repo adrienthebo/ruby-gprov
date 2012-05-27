@@ -14,52 +14,50 @@
 # 2011 Puppet Labs
 #
 require 'httparty'
-module GProv
-  module Auth
-    class ClientLogin
-      include HTTParty
-      base_uri 'https://www.google.com/accounts/ClientLogin'
+require 'gprov/auth'
 
-      # Instantiates a new ClientLogin object.
-      #
-      # Arguments:
-      #  * email: the email account to use for authentication
-      #  * password
-      #  * service: the Google service to generate authentication for
-      #  * options: An additional hash of parameters
-      #    * debug: turns on debug information for the request/response
-      #
-      # TODO make service an optional field
-      def initialize(email, password, service, options={})
-        @email    = email
-        @password = password
-        @service  = service
-        @options  = options
+class GProv::Auth::ClientLogin
+  include HTTParty
+  base_uri 'https://www.google.com/accounts/ClientLogin'
 
-        # additional options parsing
-        if @options[:debug]
-          self.class.debug_output $stderr
-        end
-      end
+  # Instantiates a new ClientLogin object.
+  #
+  # Arguments:
+  #  * email: the email account to use for authentication
+  #  * password
+  #  * service: the Google service to generate authentication for
+  #  * options: An additional hash of parameters
+  #    * debug: turns on debug information for the request/response
+  #
+  # TODO make service an optional field
+  def initialize(email, password, service, options={})
+    @email    = email
+    @password = password
+    @service  = service
+    @options  = options
 
-      # Given an instantiated ClientLogin object, performs the actual 
-      # request/response handling of the authentication information.
-      #
-      # TODO More comprehensive error checking for this.
-      # TODO CAPTCHA handling
-      def token
-        form_data = {
-          "accountType" => "HOSTED",
-          "Email"       => @email,
-          "Passwd"      => @password,
-          "service"     => @service,
-        }
+    # additional options parsing
+    if @options[:debug]
+      self.class.debug_output $stderr
+    end
+  end
 
-        response = self.class.post('', {:body => form_data})
-        if response.code == 200 and response.body =~ /Auth=(.*)\n/
-          $1
-        end
-      end
+  # Given an instantiated ClientLogin object, performs the actual 
+  # request/response handling of the authentication information.
+  #
+  # TODO More comprehensive error checking for this.
+  # TODO CAPTCHA handling
+  def token
+    form_data = {
+      "accountType" => "HOSTED",
+      "Email"       => @email,
+      "Passwd"      => @password,
+      "service"     => @service,
+    }
+
+    response = self.class.post('', {:body => form_data})
+    if response.code == 200 and response.body =~ /Auth=(.*)\n/
+      $1
     end
   end
 end
