@@ -50,7 +50,7 @@ module GProv
 
         # Assign default arguments and validate passed arguments
         if path.nil?
-          raise "#{self.class}##{verb} requires a non-nil path"
+          raise ArgumentError, "#{self.class}##{verb} requires a non-nil path"
         end
 
         # If extra headers were passed in, explode the containing array. Else,
