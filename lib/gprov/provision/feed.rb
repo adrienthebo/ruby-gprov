@@ -11,14 +11,16 @@ class GProv::Provision::Feed
     @connection = connection
     @url        = url
     @xpath      = xpath
-
-    @results = []
   end
 
-  # Retrieve all entries in a feed, represented as nokogiri elements. Takes
-  # an optional block and yields to it each successive page of results
-  # retrieved. Returns all of the entries in the feed.
-  def fetch(&block)
+  # Fetch all entries in a feed, and ignore any cached entries. Accepts an
+  # optional block that will be fed each page of entries.
+  #
+  # This can be used to force a new fetch, but might cause unneeded overhead.
+  # You probably want #fetch.
+
+  def fetch!(&block)
+    @results = []
     link = @url
 
     until link.nil?
@@ -34,8 +36,8 @@ class GProv::Provision::Feed
 
   # If no results are available, fetch them. Else return what data we have
   # already downloaded.
-  def results
-    fetch unless @results
+  def fetch(&block)
+    fetch! &block unless @results
     @results
   end
 
