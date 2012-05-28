@@ -38,6 +38,16 @@ module GProv::Provision::EntryBase::ClassMethods
       # against the xmlattr defined type before saving the value. This allows
       # us to do validation client side instead of waiting for Google to send
       # back a failure response.
+      #
+      # REVIEW: This code contains logic for type enforcement as well as access
+      # control and utterly smashes encapsulation. It's tightly coupled with
+      # the XMLAttr access method, and that method exists almost entirely for
+      # use here. In addition, it's debatable whether validation should occur
+      # here or elsehwere.
+      #
+      # It might make sense to move the entire attr_writer logic created here
+      # into the XMLAttr, although I can't determine how to send the data back
+      # to the class that's using it.
       define_method("#{name}=") do |val|
         if attr.valid?(val)
           instance_var = "@#{name}".intern
