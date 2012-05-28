@@ -48,16 +48,22 @@ class GProv::Provision::EntryBase::XMLAttr
     @xpath
   end
 
+  def access(val=nil)
+    @access = val if val
+    @access
+  end
+
   # If given a value, set the object type of this method. Returns the type as
   # well, so this acts as a joint setter and getter
   def type(val=nil)
+    unless val.nil?
+      types = [:numeric, :string, :bool, Array]
 
-    types = [:numeric, :string, :bool, Array]
-
-    if types.include? val
-      @type = val
-    else
-      raise ArgumentError, "#{@type} is not recognized as a valid format type"
+      if types.include? val
+        @type = val
+      else
+        raise ArgumentError, "#{val} is not recognized as a valid format type"
+      end
     end
 
     @type
@@ -97,9 +103,9 @@ class GProv::Provision::EntryBase::XMLAttr
 
     parsed_value = \
     case @type
-    when Numeric
+    when :numeric
       str.to_i
-    when String, NilClass
+    when :string
       # No typing specified or actively disabled, just return the object
       str
     when :bool

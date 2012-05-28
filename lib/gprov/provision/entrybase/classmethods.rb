@@ -29,7 +29,25 @@ module GProv::Provision::EntryBase::ClassMethods
     attr.instance_eval &block if block_given?
     @attrs ||= []
     @attrs << attr
-    attr_accessor name
+
+    attr_reader name
+
+    if attr.access == :write or attr.access.nil?
+
+      # Define an attr_write method that ensures that the input validates
+      # against the xmlattr defined type before saving the value. This allows
+      # us to do validation client side instead of waiting for Google to send
+      # back a failure response.
+      define_method("#{name}=") do |val|
+        if attr.valid?(val)
+          instance_var = "@#{name}".intern
+          instance_variable_set instance_var, val
+          status = :dirty
+        else
+          raise ArgumentError, "#{val} is not of type #{attr.type}; cannot set as #{name}"
+        end
+      end
+    end
   end
 
   # This is a class method because xmlattr objects are not directly
