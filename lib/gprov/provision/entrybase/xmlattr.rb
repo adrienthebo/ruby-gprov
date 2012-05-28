@@ -40,7 +40,7 @@ class GProv::Provision::EntryBase::XMLAttr
   def initialize(name, options={})
     @name = name
     @type = :string
-    methodhash(options)
+    attributes_from_hash(options)
   end
 
   def xpath(val=nil)
@@ -96,7 +96,7 @@ class GProv::Provision::EntryBase::XMLAttr
   #
   #   XMLAttr.new(:example, :type => :bool, :xpath => '/my/xpath')
   #
-  def methodhash(hash)
+  def attributes_from_hash(hash)
     hash.each_pair do |method, value|
       if respond_to? method
         send method, value
