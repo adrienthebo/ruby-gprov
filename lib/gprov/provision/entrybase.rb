@@ -35,8 +35,6 @@ class GProv::Provision::EntryBase
   #  * nothing, as in we have a fresh object.
   def initialize(opts={})
 
-    @status = (opts[:status] || :new)
-
     if opts[:connection]
       @connection = opts[:connection]
     else
@@ -54,6 +52,9 @@ class GProv::Provision::EntryBase
     else
       raise ArgumentError, "unrecognized object source #{opts[:source]}"
     end
+
+    # The last thing we do is mark this object with the given state
+    @status = (opts[:status] || :new)
   end
 
   # Takes all xmlattrs defined against this object, and a given XML
