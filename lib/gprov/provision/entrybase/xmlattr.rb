@@ -48,9 +48,13 @@ class GProv::Provision::EntryBase::XMLAttr
     @xpath
   end
 
+  # If given a value, set the object type of this method. Returns the type as
+  # well, so this acts as a joint setter and getter
   def type(val=nil)
 
-    if [:numeric, :string, :bool].include? val
+    types = [:numeric, :string, :bool]
+
+    if types.include? val
       @type = val
     else
       raise ArgumentError, "#{@type} is not recognized as a valid format type"
@@ -82,8 +86,6 @@ class GProv::Provision::EntryBase::XMLAttr
       else # XXX sketchy
         @value = false
       end
-    else
-      raise ArgumentError, "Unable to format data: #{@type} is not recognized as a valid format type"
     end
     @value
   end
