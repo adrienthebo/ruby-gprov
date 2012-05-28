@@ -22,17 +22,17 @@ class GProv::Provision::User < GProv::Provision::EntryBase
 
   # The :title attribute is only used after the account has been created
   # TODO implement :none access for attributes. This should be hidden.
-  xmlattr :title, :type => :string, :xpath => "xmlns:title/text()"
+  xmlattr :title, :xpath => "xmlns:title/text()"
 
   xmlattr :user_name,       :xpath => "apps:login/@userName"
-  xmlattr :suspended,       :xpath => "apps:login/@suspended"
-  xmlattr :ip_whitelisted,  :xpath => "apps:login/@ipWhitelisted"
-  xmlattr :admin,           :xpath => "apps:login/@admin"
-  xmlattr :agreed_to_terms, :xpath => "apps:login/@agreedToTerms"
-  xmlattr :limit,           :xpath => "apps:quota/@limit"
+  xmlattr :suspended,       :xpath => "apps:login/@suspended",     :type => :bool
+  xmlattr :ip_whitelisted,  :xpath => "apps:login/@ipWhitelisted", :type => :bool
+  xmlattr :admin,           :xpath => "apps:login/@admin",         :type => :bool
+  xmlattr :agreed_to_terms, :xpath => "apps:login/@agreedToTerms", :type => :bool
+  xmlattr :limit,           :xpath => "apps:quota/@limit",         :type => :numeric
   xmlattr :family_name,     :xpath => "apps:name/@familyName"
   xmlattr :given_name,      :xpath => "apps:name/@givenName"
-  xmlattr :change_password_at_next_login, :xpath => "apps:login/@changePasswordAtNextLogin"
+  xmlattr :change_password_at_next_login, :xpath => "apps:login/@changePasswordAtNextLogin", :type => :bool
 
   # Adds explicit ordering to attributes for cleaner output
   def self.attribute_names

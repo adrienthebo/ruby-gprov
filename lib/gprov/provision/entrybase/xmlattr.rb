@@ -40,7 +40,7 @@ class GProv::Provision::EntryBase::XMLAttr
   def initialize(name, options={})
     @name = name
     @type = :string
-    methodhash(options)
+    attributes_from_hash(options)
   end
 
   def xpath(val=nil)
@@ -48,9 +48,13 @@ class GProv::Provision::EntryBase::XMLAttr
     @xpath
   end
 
+  # If given a value, set the object type of this method. Returns the type as
+  # well, so this acts as a joint setter and getter
   def type(val=nil)
 
-    if [:numeric, :string, :bool].include? val
+    types = [:numeric, :string, :bool, Array]
+
+    if types.include? val
       @type = val
     else
       raise ArgumentError, "#{@type} is not recognized as a valid format type"
@@ -59,33 +63,54 @@ class GProv::Provision::EntryBase::XMLAttr
     @type
   end
 
+  # Perform input validation against a possible value for this attr
+  def valid?(input)
+    case @type
+    when :numeric
+      input.is_a? Numeric
+    when :numeric
+      input.is_a? String
+    when :bool
+      # If an object is a boolean, then it will equal a normalized version of
+      # itself
+      !!input == input
+    when Array
+      @type.include? input
+    else
+      # If there's no type set on this attribute, then anything goes
+      true
+    end
+  end
+
   # Given an XML document, use the supplied xpath value to extract the
   # desired value for this attribute from the document.
   def parse(xml)
-    @value = xml.at_xpath(@xpath).to_s
-    format
+    parsed_string = xml.at_xpath(@xpath).to_s
+    parse_to_type(parsed_string)
   end
 
   private
 
-  # Convert the given attribute from a string into an actual meaningful
-  # type.
-  def format
+  # If the attribute has an actual type, then try to coerce the string parsed
+  # from XML into that type.
+  def parse_to_type(str)
+
+    parsed_value = \
     case @type
-    when :numeric
-      @value = @value.to_i
-    when :string
-      # no op
+    when Numeric
+      str.to_i
+    when String, NilClass
+      # No typing specified or actively disabled, just return the object
+      str
     when :bool
-      if @value == "true"
-        @value = true
-      else # XXX sketchy
-        @value = false
-      end
+      str == "true"
+    when Array
+      str.intern
     else
-      raise ArgumentError, "Unable to format data: #{@type} is not recognized as a valid format type"
+      str
     end
-    @value
+
+    @value = parsed_value
   end
 
   # Given a hash, use the keys as method names and the values as the
@@ -96,7 +121,7 @@ class GProv::Provision::EntryBase::XMLAttr
   #
   #   XMLAttr.new(:example, :type => :bool, :xpath => '/my/xpath')
   #
-  def methodhash(hash)
+  def attributes_from_hash(hash)
     hash.each_pair do |method, value|
       if respond_to? method
         send method, value
