@@ -57,6 +57,8 @@ class GProv::Provision::EntryBase
     @status = (opts[:status] || :new)
   end
 
+  private
+
   # Takes all xmlattrs defined against this object, and a given XML
   # document, and converts each xmlattr into the according value.
   def xml_to_hash(xml)
