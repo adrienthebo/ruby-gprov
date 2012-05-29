@@ -65,7 +65,7 @@ module GProv::Provision::EntryBase::ClassMethods
 
   # Provides an ordered list of xml attributes. Mainly used to give
   # a list of attributes in a specific order.
-  def attributes
+  def xmlattrs
     @attrs
   end
 

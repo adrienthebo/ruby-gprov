@@ -63,7 +63,7 @@ class GProv::Provision::EntryBase
   # document, and converts each xmlattr into the according value.
   def xml_to_hash(xml)
     h = {}
-    if attrs = self.class.attributes
+    if attrs = self.class.xmlattrs
       attrs.inject(h) do |hash, attr|
         hash[attr.name] = attr.parse(xml)
         hash
