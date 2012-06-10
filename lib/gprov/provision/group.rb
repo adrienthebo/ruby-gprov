@@ -1,24 +1,13 @@
-# = gprov/provision/group.rb: implementation of the gprov provisioning groupentry
-#
-# == Overview
-#
-# implementation of the gprov provisioning groupentry
-#
-# == Authors
-#
-# Adrien Thebo
-#
-# == Copyright
-#
-# 2011 Puppet Labs
-#
 require 'nokogiri'
-
 require 'gprov'
 require 'gprov/provision/entrybase'
 require 'gprov/provision/member'
 require 'gprov/provision/owner'
 
+#
+# Implementation of the GroupEntry
+#
+# @see https://developers.google.com/google-apps/provisioning/#methods_for_groups Google Provisioning API methods for groups
 class GProv::Provision::Group < GProv::Provision::EntryBase
 
   # TODO copy group_id on instantiation so that groups can change
@@ -29,7 +18,15 @@ class GProv::Provision::Group < GProv::Provision::EntryBase
   xmlattr :permission_preset, :xpath => %Q{apps:property[@name = "permissionPreset"]/@value}
   xmlattr :description,       :xpath => %Q{apps:property[@name = "description"]/@value}
 
-  # Retrieves all users within a domain
+  # Retrieves all groups within a domain
+  #
+  # @param [Connection] connection The Connection object used to connect to Google
+  # @param [Hash] options The datasource and state of this object
+  #
+  # @option opts [String] :member Restrict the query to only groups of the given user
+  # @option opts [Boolean] :direct_only Restrict the query to only direct group membership
+  #
+  # @return [Array<Group>] All the fetched group objects
   def self.all(connection, options={})
 
     # TODO Fail if unrecognized options passed
@@ -47,6 +44,12 @@ class GProv::Provision::Group < GProv::Provision::EntryBase
     entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
   end
 
+  # Fetch a single group.
+  #
+  # @param [Connection] connection The Connection object used to connect to Google
+  # @param [String] group_id The name of the group to fetch
+  #
+  # @return [Group]
   def self.get(connection, group_id)
     response = connection.get("/group/2.0/:domain/#{group_id}")
     document = Nokogiri::XML(response.body)
