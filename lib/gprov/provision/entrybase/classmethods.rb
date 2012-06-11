@@ -1,29 +1,26 @@
-# = gprov/provision/entrybase/classmethods.rb
-#
-# == Overview
-#
-# Generates the DSL style behavior for entrybase and adds some convenience
-# methods
-#
-# == Authors
-#
-# Adrien Thebo
-#
-# == Copyright
-#
-# 2011 Puppet Labs
-#
 require 'nokogiri'
 
 require 'gprov'
 require 'gprov/provision/entrybase'
 require 'gprov/provision/entrybase/xmlattr'
 
-# Predeclare this.
 class GProv::Provision::EntryBase; end
 
+#
+# This module provides for the `XMLAttr` DSL for the EntryBase class, and
+# exposes the XMLAttrs as class level data for outside consumption.
 module GProv::Provision::EntryBase::ClassMethods
-  # Generates xmlattrs and encapsulates parsing logic
+
+  #
+  # Generate an XMLAttr for the extending class.
+  #
+  # @param [Symbol] name The name of this attribute, which will be used to
+  #                      create attribute accessors and mutators
+  # @param [Hash] options Additional attributes to pass to the XMLAttr constructor
+  # @param [Proc] block An optional block to be evaluated in the resulting
+  #                     instance context.
+  #
+  # @return [NilClass]
   def xmlattr(name, options={}, &block)
     attr = GProv::Provision::EntryBase::XMLAttr.new(name, options)
     attr.instance_eval &block if block_given?
@@ -60,21 +57,21 @@ module GProv::Provision::EntryBase::ClassMethods
     end
   end
 
-  # This is a class method because xmlattr objects are not directly
-  # exposed, so parsing needs to happen in the class.
-
-  # Provides an ordered list of xml attributes. Mainly used to give
-  # a list of attributes in a specific order.
+  # @return [Array<XMLAttr>] the XMLAttrs applied to this class.
   def xmlattrs
     @attrs
   end
 
+  # @return [Array<String>] the attribute names of all of the XMLAttrs.
   def attribute_names
     @attrs.map {|a| a.name }
   end
 
-  # Transforms standard ruby attribute names to something slightly more
-  # human readable.
+  #
+  # Takes the names of the XMLAttrs and turns them into more readable titles.
+  # Underscores are replaced with spaces and words are capitalized.
+  #
+  # @return [Array<String>]
   def attribute_titles
     attribute_names.map {|f| f.to_s.capitalize.sub(/$/, ":").gsub(/_/, " ") }
   end

@@ -1,31 +1,29 @@
-# = GProv::Connection: common interface for the google apps API
-#
-# == Overview
-#
-# Provides a single point of access for making http requests against the google
-# apps API.
-#
-# This adds the correct authorization header and content-type for make
-# requests against the google API work correctly, so that calling classes
-# don't need to handle authentication, formatting, or basic error handling.
-#
-# == Authors
-#
-# Adrien Thebo
-#
-# == Copyright
-#
-# 2011 Puppet Labs
-#
 require 'httparty'
 require 'gprov'
 require 'gprov/error'
 
 class GProv::Connection
+  # Provides a single point of access for making http requests against the google
+  # apps API.
+  #
+  # This adds the correct authorization header and content-type for make
+  # requests against the google API work correctly, so that calling classes
+  # don't need to handle authentication, formatting, or basic error handling.
+  #
+
   include HTTParty
   base_uri "https://apps-apis.google.com/a/feeds/"
 
   attr_reader :domain
+
+  #
+  # @param [String] domain
+  # @param [String] token
+  # @param [hash] options
+  #
+  # @option options [Boolean] debug Toggles debug output for HTTParty
+  # @option options [Boolean] noop  Enables or disables sending actual HTTP queries
+  #
   def initialize(domain, token, options = {})
     @domain = domain
     @token  = token
@@ -36,6 +34,9 @@ class GProv::Connection
     end
   end
 
+  # Provide the globally required Authorization and Content-Type headers.
+  #
+  # @return [Hash] The default headers
   def default_headers
     {:headers => {
       'Authorization' => "GoogleLogin auth=#{@token}",

@@ -1,12 +1,26 @@
-# Generic representation of the various types of feeds available from the
-# provisioning api
 require 'nokogiri'
 
 require 'gprov'
 require 'gprov/provision/entrybase/xmlattr'
 
+#
+# Generic representation of the various types of feeds available from the
+# provisioning API.
+#
+# The Google Provisioning API has constructs for both entries and feeds, so
+# for instance there is a discrete UserEntry and a UserFeed. However, the
+# feeds are all formatted in the same manner, so instead we just create a
+# single feed class that can return arrays of actual Entry classes.
+#
+# This mainly serves to instantiate Entry objects, so users of the GProv
+# library shouldn't have to use this.
+#
+# @see https://developers.google.com/google-apps/provisioning/#sample_nicknamefeed_response An example of a specific feed: NicknameFeed
+# @see https://developers.google.com/google-apps/provisioning/reference#Results_Pagination Google Provisioning API Results Pagination
 class GProv::Provision::Feed
 
+  # @param [Connection] connection The Connection object used to connect to Google
+  # @param [String] url The Feed URL to start fetching paged results from.
   def initialize(connection, url, xpath)
     @connection = connection
     @url        = url
@@ -18,7 +32,9 @@ class GProv::Provision::Feed
   #
   # This can be used to force a new fetch, but might cause unneeded overhead.
   # You probably want #fetch.
-
+  #
+  # @yield [Array<Nokogiri::XML::node>] The results of the last page fetch
+  # @return [Array<Nokogiri::XML::node>] The aggregated results
   def fetch!(&block)
     @results = []
     link = @url
@@ -34,8 +50,11 @@ class GProv::Provision::Feed
     @results
   end
 
-  # If no results are available, fetch them. Else return what data we have
-  # already downloaded.
+  # Return all entries in a feed. If they don't exist, fetch and cache them. If
+  # they exist, return the cache.
+  #
+  # @yield [Array<Nokogiri::XML::node>] The results of the last page fetch
+  # @return [Array<Nokogiri::XML::node>] The aggregated results
   def fetch(&block)
     fetch! &block unless @results
     @results

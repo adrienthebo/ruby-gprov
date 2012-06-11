@@ -1,23 +1,13 @@
-# = gprov/provision/user.rb: implementation of the gprov provisioning userentry
-#
-# == Overview
-#
-# implementation of the gprov provisioning userentry
-#
-# == Authors
-#
-# Adrien Thebo
-#
-# == Copyright
-#
-# 2011 Puppet Labs
-#
 require 'nokogiri'
 
 require 'gprov'
 require 'gprov/provision/feed'
 require 'gprov/provision/entrybase'
 
+#
+# Implementation of the UserEntry
+#
+# @see https://developers.google.com/google-apps/provisioning/#managing_user_accounts Google Provisioning API user accounts
 class GProv::Provision::User < GProv::Provision::EntryBase
 
   # The :title attribute is only used after the account has been created
@@ -54,12 +44,23 @@ class GProv::Provision::User < GProv::Provision::EntryBase
   attr_accessor :password, :hash_function_name
 
   # Retrieves all users within a domain
+  #
+  # @param [Connection] connection The Connection object used to connect to Google
+  #
+  # @return [Array<User>] All the fetched user objects
   def self.all(connection)
     feed = GProv::Provision::Feed.new(connection, "/:domain/user/2.0", "/xmlns:feed/xmlns:entry")
     entries = feed.fetch
     entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
   end
 
+  # Fetch a particular user.
+  #
+  # @param [Connection] connection The Connection object used to connect to Google
+  # @param [String] title The nickname to fetch
+  # @param [Hash] options This variable is not currently used
+  #
+  # @return [User]
   def self.get(connection, title, options={})
     response = connection.get("/:domain/user/2.0/#{title}")
     document = Nokogiri::XML(response.body)

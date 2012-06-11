@@ -1,23 +1,12 @@
-# = gprov/provision/orgmember.rb
-#
-# == Overview
-#
-# Representation of the members of organizational units
-#
-# == Authors
-#
-# Adrien Thebo
-#
-# == Copyright
-#
-# 2011 Puppet Labs
-#
 require 'nokogiri'
-
 require 'gprov'
 require 'gprov/provision/feed'
 require 'gprov/provision/entrybase'
 
+#
+# Implements an Organization Unit member
+#
+# @see https://developers.google.com/google-apps/provisioning/#managing_organization_users Google Provisioning API organization user management
 class GProv::Provision::OrgMember < GProv::Provision::EntryBase
 
   # This attribute will only be received and never sent
@@ -25,6 +14,15 @@ class GProv::Provision::OrgMember < GProv::Provision::EntryBase
   xmlattr :org_unit_path,  :xpath => %Q{apps:property[@name = "orgUnitPath"]/@value}
 
   # Retrieve all organization users in the domain.
+  #
+  # @param [Connection] connection The Connection object used to connect to Google
+  # @param [Hash] options
+  #
+  # @option options [Symbol] :target (:all) Whether to fetch all users, or that of a single Organization Unit [:orgunit, :all]
+  # @option options [String] :orgunit If fetching for an orgunit, fetch for the supplied orgunit
+  # The name of the group to fetch owners for.
+  #
+  # @return [Array<OrgMember>] All the fetched orgmember objects
   def self.all(connection, options = {:target => :all})
     id = GProv::Provision::CustomerID.get(connection)
 
@@ -41,6 +39,12 @@ class GProv::Provision::OrgMember < GProv::Provision::EntryBase
     entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
   end
 
+  # Retrieves a specific organization member
+  #
+  # @param [Connection] connection The Connection object used to connect to Google
+  # @param [String] email The email address of the user to fetch
+  #
+  # @return [OrgMember]
   def self.get(connection, email)
     id = GProv::Provision::CustomerID.get(connection)
     response = connection.get("/orguser/2.0/#{id.customer_id}/#{email}")
@@ -51,7 +55,6 @@ class GProv::Provision::OrgMember < GProv::Provision::EntryBase
     new(:status => :clean, :connection => connection, :source => xml)
   end
 
-  # This attribute will only be sent and never received
   def initialize(opts={})
     super
     # Generate this variable in the case that the org_unit_path is updated

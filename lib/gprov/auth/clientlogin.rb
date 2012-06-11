@@ -1,35 +1,26 @@
-# = gprov/auth/clientlogin.rb Implements the google clientLogin authentication method
-#
-# == Overview
-#
-# Implements the Google clientLogin method as documented in
-# http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html
-#
-# == Authors
-#
-# Adrien Thebo
-#
-# == Copyright
-#
-# 2011 Puppet Labs
-#
 require 'httparty'
 require 'gprov/auth'
 
+# Implements the Google ClientLogin authentication method.
+#
+# @see https://developers.google.com/accounts/docs/AuthForInstalledApps API specification
+# @see https://github.com/adrienthebo/ruby-gprov/issues/7 ClientLogin deprecation
 class GProv::Auth::ClientLogin
+
   include HTTParty
   base_uri 'https://www.google.com/accounts/ClientLogin'
 
   # Instantiates a new ClientLogin object.
   #
-  # Arguments:
-  #  * email: the email account to use for authentication
-  #  * password
-  #  * service: the Google service to generate authentication for
-  #  * options: An additional hash of parameters
-  #    * debug: turns on debug information for the request/response
+  # == Parameters
+  # @param [String] email The email account to use for authentication
+  # @param [String] password The password to use for authentication
+  # @param [String] service The Google service for which to generate an auth token
+  # @param [Hash] options An additional hash of optional parameters
   #
-  # TODO make service an optional field
+  # @option options [Boolean] :debug (false) toggles debug information for the request/response
+  #
+  # @todo make service an optional field
   def initialize(email, password, service, options={})
     @email    = email
     @password = password
@@ -42,11 +33,14 @@ class GProv::Auth::ClientLogin
     end
   end
 
-  # Given an instantiated ClientLogin object, performs the actual 
+  # Given an instantiated ClientLogin object, perform the actual
   # request/response handling of the authentication information.
   #
-  # TODO More comprehensive error checking for this.
-  # TODO CAPTCHA handling
+  # @return [String] If authentication succeeded, the auth token
+  # @return [NilClass] If authentication failed, nil
+  #
+  # @todo More comprehensive error checking
+  # @todo CAPTCHA handling
   def token
     form_data = {
       "accountType" => "HOSTED",

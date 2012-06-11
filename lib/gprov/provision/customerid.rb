@@ -1,20 +1,18 @@
-# = gprov/customerid.rb
-#
-# == Overview
-#
-# Retrieves a customerid string for an accompanying domain
-#
-# == Authors
-#
-# Adrien Thebo
-#
-# == Copyright
-#
-# 2011 Puppet Labs
-#
 require 'gprov'
 require 'gprov/provision/entrybase'
 
+# Retrieves a CustomerID string for an accompanying domain.
+#
+# @example
+#
+#   cust = GProv::Provision::CustomerID.get(connection)
+#   cust.customer_id
+#   # => Q3dHFrk7
+#   cust.customer_org_unit_name
+#   # => "example.com"
+#
+# @see https://developers.google.com/google-apps/provisioning/#retrieving_a_customerid_experimental CustomerID API specification
+#
 class GProv::Provision::CustomerID < GProv::Provision::EntryBase
 
   xmlattr :customer_id, :xpath => %Q{apps:property[@name = "customerId"]/@value}
@@ -29,6 +27,10 @@ class GProv::Provision::CustomerID < GProv::Provision::EntryBase
    xpath %Q{apps:property[@name = "customerOrgUnitDescription"]/@value}
   end
 
+  # @param [Connection] connection A Connection object associated with the target domain
+  # @param [Hash] options Not currently used
+  #
+  # @return [CustomerID] The customer ID for the domain
   def self.get(connection, options={})
     response = connection.get("/customer/2.0/customerId")
 

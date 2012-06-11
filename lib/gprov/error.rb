@@ -1,19 +1,7 @@
-# = gprov/error.rb
-#
-# == Overview
-#
-# Common definition of possible gprov errors.
-#
-# == Authors
-#
-# Adrien Thebo
-#
-# == Copyright
-#
-# 2011 Puppet Labs
-#
 require 'gprov'
 class GProv::Error < Exception
+  # Common definition of possible gprov errors.
+
   attr_reader :request
 
   def initialize(request = nil)

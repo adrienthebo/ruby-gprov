@@ -1,12 +1,16 @@
-# = gprov/provision/entrybase/xmlattr.rb: attribute accessors with xml annotations
-#
-# == Overview
+require 'nokogiri'
+
+require 'gprov'
+require 'gprov/provision/entrybase'
+
+# Attribute accessors with XML annotations
 #
 # Defines a data type and provides the logic for extracting and formatting
-# object information from xml data
+# object information from xml data.
 #
 # Attribute accessors are not directly defined, because this class was designed
 # to be used DSL style
+#
 #
 # == Examples
 #
@@ -17,24 +21,13 @@
 #       xpath "example/xpath/text()"
 #     end
 #
-# == Authors
-#
-# Adrien Thebo
-#
-# == Copyright
-#
-# 2011 Puppet Labs
-#
-require 'nokogiri'
-
-require 'gprov'
-require 'gprov/provision/entrybase'
-
 class GProv::Provision::EntryBase::XMLAttr
 
+  #
   # The name attribute is not used by this class, but is used by calling
   # classes to determine the method/attribute name they'll use to
   # associate with this object.
+  # @return [Symbol]
   attr_reader :name
 
   def initialize(name, options={})
@@ -90,6 +83,8 @@ class GProv::Provision::EntryBase::XMLAttr
 
   # Given an XML document, use the supplied xpath value to extract the
   # desired value for this attribute from the document.
+  #
+  # @return [Object] The parsed value
   def parse(xml)
     parsed_string = xml.at_xpath(@xpath).to_s
     parse_to_type(parsed_string)
@@ -99,6 +94,8 @@ class GProv::Provision::EntryBase::XMLAttr
 
   # If the attribute has an actual type, then try to coerce the string parsed
   # from XML into that type.
+  #
+  # @return [Object] The parsed value
   def parse_to_type(str)
 
     parsed_value = \
@@ -123,9 +120,15 @@ class GProv::Provision::EntryBase::XMLAttr
   # arguments to send to the method. This allows for quick instantiation
   # of this type.
   #
-  # *Example:*
+  # @param [Hash] hash Pairs of attribute names and attribute values to set
+  # @example
   #
-  #   XMLAttr.new(:example, :type => :bool, :xpath => '/my/xpath')
+  #   x = XMLAttr.new(:example, :type => :bool, :xpath => '/my/xpath')
+  #
+  #   x.type
+  #   # => :bool
+  #   x.xpath
+  #   # => '/my/xpath'
   #
   def attributes_from_hash(hash)
     hash.each_pair do |method, value|

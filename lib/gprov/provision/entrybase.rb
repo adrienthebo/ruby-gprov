@@ -1,38 +1,31 @@
-# = gprov/provision/entrybase.rb: base class for provisioning api objects
-#
-# == Overview
-#
-# Provides the top level constructs for mapping XML feeds to objects and back
-#
-# == Authors
-#
-# Adrien Thebo
-#
-# == Copyright
-#
-# 2011 Puppet Labs
-#
 require 'nokogiri'
 
 require 'gprov'
 require 'gprov/provision/entrybase/classmethods'
 
+#
+# This class provides the top level constructs for the Provisioning API
+# Entry objects. It handles instantiation and use of the XMLAttr objects.
+#
 class GProv::Provision::EntryBase
 
   extend GProv::Provision::EntryBase::ClassMethods
 
-  # Status with respect to google.
-  # TODO protected?
-  # values: :new, :clean, :dirty, :deleted
+  # The object status with respect to the Provisioning API state.
+  # @todo should this be protected?
+  # @return [Symbol] One of [:new, :clean, :dirty, :deleted]
   attr_reader :status
   attr_reader :connection
 
   # Instantiates a new entry object.
   #
-  # Possible data sources:
-  #  * Hash of attribute names and values
-  #  * A nokogiri node containing the root of the object
-  #  * nothing, as in we have a fresh object.
+  # @param [Hash] opts The datasource and state of this object
+  #
+  # @option opts [Hash] :source a Hash of attribute names and values
+  # @option opts [Nokogiri::XML::Node] :source A nokogiri node containing the root of the object
+  # @option opts [NilClass] :source nothing, as in we have a fresh object.
+  # @option opts [Connection] :connection The Connection object used to connect to Google
+  # @option opts [Symbol] :status (:new) The state of this object.
   def initialize(opts={})
 
     if opts[:connection]

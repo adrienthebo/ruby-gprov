@@ -1,23 +1,13 @@
-# = Class: Nickname
-#
-# == Overview
-#
-# implementation of the gprov provisioning nicknameentry
-#
-# == Authors
-#
-# Adrien Thebo
-#
-# == Copyright
-#
-# 2011 Puppet Labs
-#
 require 'nokogiri'
 
 require 'gprov'
 require 'gprov/provision/feed'
 require 'gprov/provision/entrybase'
 
+#
+# Implementation of the NicknameEntry
+#
+# @see https://developers.google.com/google-apps/provisioning/#managing_nicknames
 class GProv::Provision::Nickname < GProv::Provision::EntryBase
 
   xmlattr :nickname, :xpath => "apps:nickname/@name"
@@ -26,7 +16,14 @@ class GProv::Provision::Nickname < GProv::Provision::EntryBase
   # Retrieves all nicknames. This can also be restricted to all nicknames for
   # a specific user.
   #
-  # Example:
+  # @param [Connection] connection The Connection object used to connect to Google
+  # @param [Hash] options The datasource and state of this object
+  #
+  # @option options [String] :member Restrict the query to only nicknames of the given user
+  #
+  # @return [Array<Nickname>] All the fetched nickname objects
+  #
+  # @example
   #
   #   GProv::Provision::Nickname.all(conn) # => all nicknames in the apps domain
   #
@@ -46,7 +43,13 @@ class GProv::Provision::Nickname < GProv::Provision::EntryBase
     entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
   end
 
-  # Retrieves a single nickname
+  # Fetch a particular nickname
+  #
+  # @param [Connection] connection The Connection object used to connect to Google
+  # @param [String] title The nickname to fetch
+  # @param [Hash] options This variable is not currently used
+  #
+  # @return [Nickname]
   def self.get(connection, title, options={})
     response = connection.get("/:domain/nickname/2.0/#{title}")
     document = Nokogiri::XML(response.body)

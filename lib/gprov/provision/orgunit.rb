@@ -1,22 +1,13 @@
-# = gprov/provision/orgunit.rb
-#
-# == Overview
-#
-# implementation of the gprov organizational unit
-#
-# == Authors
-#
-# Adrien Thebo
-#
-# == Copyright
-#
-# 2011 Puppet Labs
-#
 require 'gprov'
 require 'gprov/provision/feed'
 require 'gprov/provision/entrybase'
 require 'gprov/provision/customerid'
 require 'gprov/provision/orgmember'
+
+#
+# Implements OrganizationUnit
+#
+# @see https://developers.google.com/google-apps/provisioning/#managing_organization_units Google Provisioning API managing organizational units
 class GProv::Provision::OrgUnit < GProv::Provision::EntryBase
 
   xmlattr :name,                 :xpath => %Q{apps:property[@name = "name"]/@value}
@@ -25,6 +16,11 @@ class GProv::Provision::OrgUnit < GProv::Provision::EntryBase
   xmlattr :parent_org_unit_path, :xpath => %Q{apps:property[@name = "parentOrgUnitPath"]/@value}
   xmlattr :block_inheritance,    :xpath => %Q{apps:property[@name = "blockInheritance"]/@value}
 
+  # Retrieves all organizational units for a domain
+  #
+  # @param [Connection] connection The Connection object used to connect to Google
+  #
+  # @return [Array<OrgUnit>] All the fetched orgunits
   def self.all(connection)
     id = GProv::Provision::CustomerID.get(connection)
     feed = GProv::Provision::Feed.new(connection, "/orgunit/2.0/#{id.customer_id}?get=all", "/xmlns:feed/xmlns:entry")
@@ -32,6 +28,12 @@ class GProv::Provision::OrgUnit < GProv::Provision::EntryBase
     entries.map { |xml| new(:status => :clean, :connection => connection, :source => xml) }
   end
 
+  # Retrieves a specific orgunit at an orgunit path
+  #
+  # @param [Connection] connection The Connection object used to connect to Google
+  # @param [String] org_path The path to the Organization Unit
+  #
+  # @return [OrgUnit]
   def self.get(connection, org_path)
     id = GProv::Provision::CustomerID.get(connection)
     response = connection.get("/orgunit/2.0/#{id.customer_id}/#{org_path}")
