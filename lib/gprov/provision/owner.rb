@@ -1,19 +1,22 @@
-# = Class: Owner
-#
-# == Overview
-#
-# Represents a group owner.
-#
 require 'nokogiri'
-
 require 'gprov'
 require 'gprov/provision/entrybase'
 
+#
+# Implementation of the OwnerEntry
+#
+# @see https://developers.google.com/google-apps/provisioning/#methods_for_group_owners Google Provisioning API methods for group owners
 class GProv::Provision::Owner < GProv::Provision::EntryBase
 
   xmlattr :email, :xpath => %Q{apps:property[@name = "email"]/@value}
   attr_accessor :group_id
 
+  # Retrieves all owners of a group
+  #
+  # @param [Connection] connection The Connection object used to connect to Google
+  # @param [String] group_id The name of the group to fetch owners for.
+  #
+  # @return [Array<Owner>] All the fetched owner objects
   def self.all(connection, group_id)
     feed = GProv::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/owner", "/xmlns:feed/xmlns:entry")
     entries = feed.fetch
