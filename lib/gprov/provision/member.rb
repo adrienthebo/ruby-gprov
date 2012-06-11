@@ -1,7 +1,10 @@
-# Representation of group members
 require 'gprov'
 require 'gprov/provision/entrybase'
 
+#
+# Implementation of the MemberEntry
+#
+# @see https://developers.google.com/google-apps/provisioning/#methods_for_group_members Google Provisioning API methods for group members
 class GProv::Provision::Member < GProv::Provision::EntryBase
 
   xmlattr :member_id,     :xpath => %Q{apps:property[@name = "memberId"]/@value}
@@ -9,6 +12,12 @@ class GProv::Provision::Member < GProv::Provision::EntryBase
   xmlattr :direct_member, :xpath => %Q{apps:property[@name = "directMember"]/@value}
   attr_accessor :group_id
 
+  # Retrieves all members of a group
+  #
+  # @param [Connection] connection The Connection object used to connect to Google
+  # @param [String] group_id The name of the group to fetch members for.
+  #
+  # @return [Array<Member>] All the fetched member objects
   def self.all(connection, group_id)
     feed = GProv::Provision::Feed.new(connection, "/group/2.0/:domain/#{group_id}/member", "/xmlns:feed/xmlns:entry")
     entries = feed.fetch
